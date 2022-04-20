@@ -19,6 +19,8 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\ItemsByName.graphql" />
+      <None Remove="Resources\Ammo.graphql" />
+      <EmbeddedResource Include="Resources\Ammo.graphql" />
     </ItemGroup>
 
 </Project>
