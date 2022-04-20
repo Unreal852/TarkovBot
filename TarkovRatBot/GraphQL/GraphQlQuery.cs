@@ -52,7 +52,6 @@ public class GraphQlQuery
     {
         string content = await Execute(param);
         JsonDocument document = JsonDocument.Parse(content);
-        WriteLine(content);
         return string.IsNullOrWhiteSpace(content)
                 ? default
                 : document.RootElement.GetProperty("data").GetProperty(string.IsNullOrWhiteSpace(propertyName)
