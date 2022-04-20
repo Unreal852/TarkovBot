@@ -103,10 +103,7 @@ public class DiscordBot
                     return;
                 }
 
-                foreach (ItemInfo itemInfo in result)
-                {
-                    await msg.Channel.SendMessageAsync(embed: BuildItemEmbed(itemInfo), messageReference: msg.Reference);
-                }
+                await msg.Channel.SendMessageAsync(embed: BuildItemEmbed(result[0]), messageReference: msg.Reference);
             }
         }
     }
