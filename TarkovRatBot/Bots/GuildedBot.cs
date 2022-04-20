@@ -45,7 +45,7 @@ public class GuildedBot
                 return;
             }
 
-            var result = await ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
+            var result = await Queries.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
             if (result is { Length: > 0 })
             {
                 foreach (ItemInfo itemInfo in result)

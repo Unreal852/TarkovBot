@@ -5,15 +5,6 @@ using TarkovRatBot.Tarkov;
 
 public class Program
 {
-    public static readonly GraphQlQuery ItemsByNameQuery;
-    public static readonly GraphQlQuery AmmoQuery;
-
-    static Program()
-    {
-        ItemsByNameQuery = new GraphQlQuery("ItemsByName");
-        AmmoQuery = new GraphQlQuery("Ammo");
-    }
-
     public static Task Main(string[] args)
     {
         return new Program().MainAsync();
@@ -26,12 +17,18 @@ public class Program
         Console.ResetColor();
     }
 
-    private GuildedBot GuildedBot = new(Consts.GuildedBotToken);
-    private DiscordBot DiscordBot = new(Consts.DiscordBotToken);
+    private readonly GuildedBot GuildedBot = new(Consts.GuildedBotToken);
+    private readonly DiscordBot DiscordBot = new(Consts.DiscordBotToken);
 
     private async Task MainAsync()
     {
-        
+        Queries.InitQueries();
+
+        if (!await TarkovCache.CacheAmmoInfos())
+            WriteLine("Failed to cache ammo data.", ConsoleColor.Red);
+        else
+            WriteLine($"Successfully cached {TarkovCache.AmmoCache.Count} ammos.", ConsoleColor.Green);
+
         await DiscordBot.Initialize();
         await GuildedBot.Initialize();
 

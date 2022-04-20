@@ -21,7 +21,9 @@
             name
             shortName
             wikiLink
+            types
             imageLink
+            iconLink
             updated
             basePrice
             low24hPrice

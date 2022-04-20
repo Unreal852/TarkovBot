@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using TarkovRatBot.Extensions;
 using static Program;
 
@@ -52,6 +53,9 @@ public class GraphQlQuery
                 ? default
                 : document.RootElement.GetProperty("data").GetProperty(string.IsNullOrWhiteSpace(propertyName)
                         ? GraphQlQueryName
-                        : propertyName).Deserialize<T>();
+                        : propertyName).Deserialize<T>(new JsonSerializerOptions
+                {
+                        Converters = { new JsonStringEnumConverter() }
+                });
     }
 }
