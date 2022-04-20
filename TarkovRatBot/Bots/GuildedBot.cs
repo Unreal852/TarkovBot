@@ -1,12 +1,7 @@
 ﻿// ReSharper disable IdentifierTypo
 
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Net;
 using Guilded;
-using Guilded.Base.Embeds;
 using Guilded.Base.Events;
-using Guilded.Base.Servers;
 using Guilded.Base.Users;
 using TarkovRatBot.Tarkov;
 using static Program;
@@ -41,7 +36,7 @@ public class GuildedBot
 
     private async void OnMessageReceived(MessageEvent msg)
     {
-        if (msg.Content.StartsWith("?price"))
+        if (msg.Content.StartsWith("?p"))
         {
             string[] split = msg.Content.Split(' ', 2);
             if (split.Length != 2 || string.IsNullOrWhiteSpace(split[1]))
@@ -50,10 +45,10 @@ public class GuildedBot
                 return;
             }
 
-            var result = await ItemsByNameQuery.ExecuteAs<DummyData>(split[1]);
-            if (result is { Data.ItemsByName.Length: > 0 })
+            var result = await ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
+            if (result is { Length: > 0 })
             {
-                foreach (ItemInfo itemInfo in result.Data.ItemsByName)
+                foreach (ItemInfo itemInfo in result)
                 {
                     /*
                     Embed embed = new Embed

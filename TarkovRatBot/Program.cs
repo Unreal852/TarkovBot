@@ -1,9 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using TarkovRatBot;
+﻿using TarkovRatBot;
 using TarkovRatBot.Bots;
 using TarkovRatBot.GraphQL;
 using TarkovRatBot.Tarkov;
@@ -11,10 +6,12 @@ using TarkovRatBot.Tarkov;
 public class Program
 {
     public static readonly GraphQlQuery ItemsByNameQuery;
+    public static readonly GraphQlQuery AmmoQuery;
 
     static Program()
     {
         ItemsByNameQuery = new GraphQlQuery("ItemsByName");
+        AmmoQuery = new GraphQlQuery("Ammo");
     }
 
     public static Task Main(string[] args)
@@ -34,8 +31,9 @@ public class Program
 
     private async Task MainAsync()
     {
-        await GuildedBot.Initialize();
+        
         await DiscordBot.Initialize();
+        await GuildedBot.Initialize();
 
         HandleInput();
     }

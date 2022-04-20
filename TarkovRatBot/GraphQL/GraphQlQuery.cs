@@ -2,7 +2,9 @@
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using TarkovRatBot.Extensions;
+using static Program;
 
 namespace TarkovRatBot.GraphQL;
 
@@ -14,6 +16,7 @@ public class GraphQlQuery
         if (!graphQlFileName.EndsWith(".graphql"))
             graphQlFileName += ".graphql";
         Query = Assembly.GetExecutingAssembly().ReadFileToEnd(graphQlFileName);
+        GraphQlQueryName = graphQlFileName[..graphQlFileName.IndexOf(".", StringComparison.Ordinal)].FirstCharToLowerCase();
         if (string.IsNullOrWhiteSpace(Query))
         {
             IsValid = false;
@@ -23,9 +26,10 @@ public class GraphQlQuery
             IsValid = true;
     }
 
-    private HttpClient HttpClient { get; }
-    private string     Query      { get; }
-    public  bool       IsValid    { get; }
+    private HttpClient HttpClient       { get; }
+    private string     Query            { get; }
+    private string     GraphQlQueryName { get; }
+    public  bool       IsValid          { get; }
 
     public async Task<string> Execute(string param = null)
     {
@@ -40,9 +44,14 @@ public class GraphQlQuery
         return responseContent;
     }
 
-    public async Task<T> ExecuteAs<T>(string param = null)
+    public async Task<T> ExecuteAs<T>(string param = null, string propertyName = null)
     {
         string content = await Execute(param);
-        return string.IsNullOrWhiteSpace(content) ? default : JsonSerializer.Deserialize<T>(content);
+        JsonDocument document = JsonDocument.Parse(content);
+        return string.IsNullOrWhiteSpace(content)
+                ? default
+                : document.RootElement.GetProperty("data").GetProperty(string.IsNullOrWhiteSpace(propertyName)
+                        ? GraphQlQueryName
+                        : propertyName).Deserialize<T>();
     }
 }

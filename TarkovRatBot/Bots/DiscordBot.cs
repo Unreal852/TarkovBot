@@ -1,5 +1,7 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using TarkovRatBot.Extensions;
 using TarkovRatBot.Tarkov;
 using static Program;
 
@@ -7,6 +9,8 @@ namespace TarkovRatBot.Bots;
 
 public class DiscordBot
 {
+    private const string SelectMenuItemChoiceId = "sel-item-name";
+
     public DiscordBot(string token)
     {
         if (string.IsNullOrWhiteSpace(token))
@@ -15,6 +19,8 @@ public class DiscordBot
         Bot = new();
         Bot.Ready += OnBotReady;
         Bot.MessageReceived += OnMessageReceived;
+        Bot.SelectMenuExecuted += OnSelectMenuExecuted;
+        Bot.Log += OnLogAsync;
     }
 
     public  DiscordSocketClient Bot   { get; }
@@ -33,11 +39,41 @@ public class DiscordBot
         return Task.CompletedTask;
     }
 
+    private Task OnLogAsync(LogMessage message)
+    {
+        if (message.Exception is CommandException cmdException)
+        {
+            Console.WriteLine($"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}"
+                            + $" failed to execute in {cmdException.Context.Channel}.");
+            Console.WriteLine(cmdException);
+        }
+        else
+            Console.WriteLine($"[General/{message.Severity}] {message}");
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnSelectMenuExecuted(SocketMessageComponent arg)
+    {
+        switch (arg.Data.CustomId)
+        {
+            case SelectMenuItemChoiceId:
+            {
+                var result = await ItemsByNameQuery.ExecuteAs<ItemInfo[]>(arg.Data.Values.First());
+                if (result is { Length: 0 })
+                    return;
+                await arg.Message.DeleteAsync();
+                await arg.Message.Channel.SendMessageAsync(embed: BuildItemEmbed(result[0]));
+                break;
+            }
+        }
+    }
+
     private async Task OnMessageReceived(SocketMessage msg)
     {
-        if (msg.Author.IsWebhook || msg.Author.IsBot)
+        if (msg.Author.IsBot)
             return;
-        if (msg.Content.StartsWith("?price"))
+        if (msg.Content.StartsWith("?p"))
         {
             string[] split = msg.Content.Split(' ', 2);
             if (split.Length != 2 || string.IsNullOrWhiteSpace(split[1]))
@@ -46,34 +82,68 @@ public class DiscordBot
                 return;
             }
 
-            var result = await ItemsByNameQuery.ExecuteAs<DummyData>(split[1]);
-            if (result is { Data.ItemsByName.Length: > 0 })
+            var result = await ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
+            if (result is { Length: > 0 })
             {
-                foreach (ItemInfo itemInfo in result.Data.ItemsByName)
+                if (result.Length > 1)
                 {
-                    var p = itemInfo.SellFor.Where(s => s.Price is > 0).OrderByDescending(s => s.Price).First();
-                    EmbedBuilder builder = new EmbedBuilder
+                    var embedBuilder = new EmbedBuilder
                     {
-                            Title = $"{itemInfo.Name} ({itemInfo.ShortName})",
-                            Url = itemInfo.WikiLink,
-                            ThumbnailUrl = itemInfo.ImageLink,
-                            Footer = new EmbedFooterBuilder { Text = "Last Updated" },
-                            Timestamp = itemInfo.Updated,
-                            Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
+                            Title = "Your request is not precise enough, select an item from the list (First 20 items) below or refine your request."
                     };
-                    builder.Fields = new List<EmbedFieldBuilder>
-                    {
-                            new() { Name = "Base Price", Value = itemInfo.BasePrice ?? 0, IsInline = true },
-                            new()
-                            {
-                                    Name = "LOW | AVG | HIGH Price (24h)",
-                                    Value = $"{itemInfo.Low24hPrice ?? 0} | {itemInfo.Average24hPrice ?? 0} | {itemInfo.High24hPrice ?? 0}", IsInline = true
-                            },
-                            new() { Name = $"Sell To {p.ItemSourceName}", Value = $"{p.Price} {p.Currency}", IsInline = true },
-                    };
-                    await msg.Channel.SendMessageAsync(embed: builder.Build(), messageReference: msg.Reference);
+
+                    var componentBuilder = new ComponentBuilder();
+                    var rowBuilder = new ActionRowBuilder();
+                    var selectMenuBuilder = new SelectMenuBuilder { CustomId = SelectMenuItemChoiceId };
+                    for (var i = 0; i < (result.Length < 20 ? result.Length : 20); i++)
+                        selectMenuBuilder.AddOption(result[i].Name, result[i].Name);
+                    rowBuilder.Components.Add(selectMenuBuilder.Build());
+                    componentBuilder.AddRow(rowBuilder);
+                    await msg.Channel.SendMessageAsync(embed: embedBuilder.Build(), components: componentBuilder.Build());
+                    return;
+                }
+
+                foreach (ItemInfo itemInfo in result)
+                {
+                    await msg.Channel.SendMessageAsync(embed: BuildItemEmbed(itemInfo), messageReference: msg.Reference);
                 }
             }
         }
+    }
+
+    private static Embed BuildItemEmbed(ItemInfo itemInfo)
+    {
+        var embedBuilder = new EmbedBuilder
+        {
+                Title = $"{itemInfo.Name} ({itemInfo.ShortName})",
+                Url = itemInfo.WikiLink,
+                ThumbnailUrl = itemInfo.ImageLink,
+                Footer = new EmbedFooterBuilder { Text = "Last Updated" },
+                Timestamp = itemInfo.Updated,
+                Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
+                Fields = new List<EmbedFieldBuilder>()
+        };
+        embedBuilder.AddField(new EmbedFieldBuilder { Name = "Base Price", Value = itemInfo.BasePrice ?? 0, IsInline = true });
+        ItemPrice sellFor = itemInfo.SellFor.Where(s => s.Price is > 0).MaxBy(s => s.Price);
+        ItemPrice buyFor = itemInfo.BuyFor.Where(s => s.Price is > 0).MinBy(s => s.Price);
+        if (buyFor != null)
+        {
+            embedBuilder.AddField(new EmbedFieldBuilder
+            {
+                    Name = $"Buy From {buyFor.ItemSourceName.FirstCharToUpperCase()}",
+                    Value = $"{buyFor.Price} {buyFor.Currency}", IsInline = true
+            });
+        }
+
+        if (sellFor != null)
+        {
+            embedBuilder.AddField(new EmbedFieldBuilder
+            {
+                    Name = $"Sell To {sellFor.ItemSourceName.FirstCharToUpperCase()}",
+                    Value = $"{sellFor.Price} {sellFor.Currency}", IsInline = true
+            });
+        }
+
+        return embedBuilder.Build();
     }
 }
