@@ -61,7 +61,7 @@ public class DiscordBot
         {
             case SelectMenuItemChoiceId:
             {
-                var result = await Queries.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(arg.Data.Values.FirstOrDefault());
+                var result = await Queries.ItemsByIdsQuery.ExecuteAs<ItemInfo[]>(arg.Data.Values.FirstOrDefault());
                 if (result is { Length: 0 })
                     return;
                 await arg.Message.DeleteAsync();
@@ -116,7 +116,7 @@ public class DiscordBot
                     var rowBuilder = new ActionRowBuilder();
                     var selectMenuBuilder = new SelectMenuBuilder { CustomId = SelectMenuItemChoiceId };
                     for (var i = 0; i < (result.Length < 20 ? result.Length : 20); i++)
-                        selectMenuBuilder.AddOption(result[i].Name, result[i].Name);
+                        selectMenuBuilder.AddOption(result[i].Name, result[i].Id);
                     rowBuilder.Components.Add(selectMenuBuilder.Build());
                     componentBuilder.AddRow(rowBuilder);
                     await msg.Channel.SendMessageAsync(embed: embedBuilder.Build(), components: componentBuilder.Build());
@@ -186,9 +186,9 @@ public class DiscordBot
                 Fields = new List<EmbedFieldBuilder>(),
                 Color = FromAmmoPenetration(ammoInfo)
         };
-        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage                 ?? 0, true);
-        embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower     ?? 0, true);
-        embedBuilder.AddField("Armor Damages", ammoInfo.ArmorDamage              ?? 0, true);
+        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage                         ?? 0, true);
+        embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
+        embedBuilder.AddField("Armor Damages", ammoInfo.ArmorDamage                      ?? 0, true);
         embedBuilder.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
         embedBuilder.AddField("Armor Class", GetArmorClass(ammoInfo), true);
         return embedBuilder.Build();

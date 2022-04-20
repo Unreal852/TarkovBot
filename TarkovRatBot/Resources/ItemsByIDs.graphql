@@ -1,0 +1,39 @@
+﻿{
+    itemsByIDs(ids: "@")
+    {
+        id
+        name
+        shortName
+        wikiLink
+        types
+        imageLink
+        iconLink
+        updated
+        basePrice
+        low24hPrice
+        avg24hPrice
+        high24hPrice
+        buyFor
+        {
+            source
+            currency
+            price
+            requirements
+            {
+                type
+                value
+            }
+        }
+        sellFor 
+        {
+            source
+            currency
+            price
+            requirements
+            {
+                type
+                value
+            }
+        }
+    }
+}

@@ -1,8 +1,6 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using TarkovRatBot.Extensions;
 using static Program;
@@ -11,6 +9,11 @@ namespace TarkovRatBot.GraphQL;
 
 public class GraphQlQuery
 {
+    private readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+            Converters = { new JsonStringEnumConverter() }
+    };
+    
     public GraphQlQuery(string graphQlFileName)
     {
         HttpClient = new();
@@ -38,7 +41,7 @@ public class GraphQlQuery
             return string.Empty;
         var data = new Dictionary<string, string>
         {
-                { "query", string.IsNullOrWhiteSpace(param) ? Query : Query.Replace("@", param) }
+                { "query", string.IsNullOrWhiteSpace(param) ? Query : Query.Replace("@", param.Replace("\"", "")) }
         };
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync(Consts.TarkovDevUrl, data);
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -49,13 +52,11 @@ public class GraphQlQuery
     {
         string content = await Execute(param);
         JsonDocument document = JsonDocument.Parse(content);
+        WriteLine(content);
         return string.IsNullOrWhiteSpace(content)
                 ? default
                 : document.RootElement.GetProperty("data").GetProperty(string.IsNullOrWhiteSpace(propertyName)
                         ? GraphQlQueryName
-                        : propertyName).Deserialize<T>(new JsonSerializerOptions
-                {
-                        Converters = { new JsonStringEnumConverter() }
-                });
+                        : propertyName).Deserialize<T>(JsonSerializerOptions);
     }
 }
