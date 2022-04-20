@@ -1,10 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Specialized;
-using System.Net;
-using System.Text;
-using System.Text.Json.Nodes;
-using Discord;
-using Discord.Webhook;
+﻿using Discord;
 using Discord.WebSocket;
 using TarkovRatBot.Tarkov;
 using static Program;
@@ -66,7 +60,6 @@ public class DiscordBot
                             Footer = new EmbedFooterBuilder { Text = "Last Updated" },
                             Timestamp = itemInfo.Updated,
                             Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
-                            
                     };
                     builder.Fields = new List<EmbedFieldBuilder>
                     {
