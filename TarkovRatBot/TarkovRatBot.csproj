@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Discord.Net" Version="3.5.0" />
+      <PackageReference Include="Guilded" Version="0.7.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="GraphQL\ItemsByName.graphql" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\ItemsByName.graphql" />
+    </ItemGroup>
+
+</Project>

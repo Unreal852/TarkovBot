@@ -1,0 +1,84 @@
+﻿// ReSharper disable IdentifierTypo
+
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Net;
+using Guilded;
+using Guilded.Base.Embeds;
+using Guilded.Base.Events;
+using Guilded.Base.Servers;
+using Guilded.Base.Users;
+using TarkovRatBot.Tarkov;
+using static Program;
+
+namespace TarkovRatBot.Bots;
+
+public class GuildedBot
+{
+    public GuildedBot(string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            throw new ArgumentException($"The specified parameter {nameof(token)} is null or empty.");
+        Token = token;
+        Bot = new(token);
+        Bot.Prepared.Subscribe(OnBotReady);
+        Bot.MessageCreated.Subscribe(OnMessageReceived);
+    }
+
+    public  GuildedBotClient Bot   { get; }
+    private string           Token { get; }
+
+    public async Task Initialize()
+    {
+        WriteLine("Initializing Guilded Bot...", ConsoleColor.Yellow);
+        await Bot.ConnectAsync();
+    }
+
+    private void OnBotReady(Me me)
+    {
+        WriteLine("Guilded Bot Initialized !", ConsoleColor.Green);
+    }
+
+    private async void OnMessageReceived(MessageEvent msg)
+    {
+        if (msg.Content.StartsWith("?price"))
+        {
+            string[] split = msg.Content.Split(' ', 2);
+            if (split.Length != 2 || string.IsNullOrWhiteSpace(split[1]))
+            {
+                await msg.ReplyAsync("Wrong Arguments. ?price {item-name}", true);
+                return;
+            }
+
+            var result = await ItemsByNameQuery.ExecuteAs<DummyData>(split[1]);
+            if (result is { Data.ItemsByName.Length: > 0 })
+            {
+                foreach (ItemInfo itemInfo in result.Data.ItemsByName)
+                {
+                    /*
+                    Embed embed = new Embed
+                    {
+                            Title = $"{itemInfo.Name} ({itemInfo.ShortName})",
+                            Thumbnail = new EmbedMedia(itemInfo.ImageLink),
+                            Fields = new Collection<EmbedField>
+                            {
+                                    new("Base Price", itemInfo.BasePrice.ToString()),
+                                    new("Lowest Price (24h)", itemInfo.Low24hPrice.ToString()),
+                                    new("Average Price (24h)", itemInfo.Average24hPrice.ToString()),
+                                    new("Highest Price (24h)", itemInfo.High24hPrice.ToString()),
+                            },
+                            Timestamp = itemInfo.Updated,
+                            Footer = new EmbedFooter("Last Updated"),
+                    }; */
+
+                    await msg.ReplyAsync($"{itemInfo.Name} ({itemInfo.ShortName}): \n " +
+                                         $"Base Price: {itemInfo.BasePrice}\n"          +
+                                         $"Lowest Price: {itemInfo.Low24hPrice}\n"      +
+                                         $"Average Price: {itemInfo.Average24hPrice}\n" +
+                                         $"Highest Price: {itemInfo.High24hPrice}\n"    +
+                                         $"Last Updated {itemInfo.Updated:g}");
+                }
+            }
+        }
+    }
+}
