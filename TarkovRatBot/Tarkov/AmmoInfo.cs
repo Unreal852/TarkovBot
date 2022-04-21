@@ -21,7 +21,7 @@ public class AmmoInfo
 
     [JsonPropertyName("initialSpeed")] public int? InitialSpeed { get; set; }
 
-    [JsonPropertyName("LightBleedModifier")]
+    [JsonPropertyName("lightBleedModifier")]
     public float? LightBleedModifier { get; set; }
 
     [JsonPropertyName("heavyBleedModifier")]

@@ -187,10 +187,15 @@ public class DiscordBot
                 Color = FromAmmoPenetrationClass(ammoInfo.EffectiveArmorClassPen)
         };
 
-        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage                         ?? 0, true);
+        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage      ?? 0, true);
+        embedBuilder.AddField("Damages (Armor)", ammoInfo.ArmorDamage ?? 0, true);
+        embedBuilder.AddField("Velocity ", $"{ammoInfo.InitialSpeed ?? 0} m/s", true);
         embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
-        embedBuilder.AddField("Armor Damages", ammoInfo.ArmorDamage                      ?? 0, true);
         embedBuilder.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
+        if (ammoInfo.LightBleedModifier.HasValue)
+            embedBuilder.AddField("Light Bleed Chances", (int?)(ammoInfo.LightBleedModifier * 100) ?? 0, true);
+        if (ammoInfo.HeavyBleedModifier is > 0)
+            embedBuilder.AddField("Heavy Bleed Chances", (int?)(ammoInfo.HeavyBleedModifier * 100) ?? 0, true);
 
         embedBuilder.AddField("Armor Class Real (Effective)",
                 $"{ammoInfo.RealArmorClassPen} {(ammoInfo.RealArmorClassPen != ammoInfo.EffectiveArmorClassPen ? $"({ammoInfo.EffectiveArmorClassPen})" : string.Empty)}",
@@ -207,7 +212,7 @@ public class DiscordBot
                 >= 4 => Color.Purple,
                 >= 3 => Color.Blue,
                 >= 2 => Color.Green,
-                _   => Color.LightGrey
+                _    => Color.LightGrey
         };
     }
 }
