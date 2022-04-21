@@ -148,9 +148,17 @@ public class DiscordBot
         ItemPrice buyFor = itemInfo.BuyFor.Where(s => s.Price is > 0).MinBy(s => s.Price);
         if (buyFor != null)
         {
+            string loyaltiRequirement = "";
+            if (buyFor.Requirements is { Length: > 0 })
+            {
+                PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == ERequirementType.LoyaltyLevel);
+                if (requirement != null)
+                    loyaltiRequirement = $"(LL {requirement.Value ?? 0})";
+            }
+
             embedBuilder.AddField(new EmbedFieldBuilder
             {
-                    Name = $"Buy From {buyFor.ItemSourceName.FirstCharToUpperCase()}",
+                    Name = $"Buy From {buyFor.ItemSourceName.FirstCharToUpperCase()} {loyaltiRequirement}",
                     Value = $"{buyFor.Price} {buyFor.Currency}", IsInline = true
             });
         }
@@ -192,7 +200,7 @@ public class DiscordBot
         embedBuilder.AddField("Velocity ", $"{ammoInfo.InitialSpeed ?? 0} m/s", true);
         embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
         embedBuilder.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
-        if (ammoInfo.LightBleedModifier.HasValue)
+        if (ammoInfo.LightBleedModifier is > 0)
             embedBuilder.AddField("Light Bleed Chances", (int?)(ammoInfo.LightBleedModifier * 100) ?? 0, true);
         if (ammoInfo.HeavyBleedModifier is > 0)
             embedBuilder.AddField("Heavy Bleed Chances", (int?)(ammoInfo.HeavyBleedModifier * 100) ?? 0, true);
