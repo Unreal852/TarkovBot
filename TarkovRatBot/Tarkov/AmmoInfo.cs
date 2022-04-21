@@ -29,4 +29,7 @@ public class AmmoInfo
 
     [JsonPropertyName("tracer")] public bool     Tracer { get; set; }
     [JsonPropertyName("item")]   public ItemInfo Item   { get; set; }
+
+    [JsonIgnore] public int RealArmorClassPen      { get; set; }
+    [JsonIgnore] public int EffectiveArmorClassPen { get; set; }
 }

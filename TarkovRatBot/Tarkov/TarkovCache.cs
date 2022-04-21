@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using TarkovRatBot.Extensions;
 
 namespace TarkovRatBot.Tarkov;
 
@@ -13,8 +14,14 @@ public static class TarkovCache
             return false;
         AmmoCache.Clear();
         foreach (AmmoInfo ammoInfo in ammoInfos)
+        {
+            // Cache armor class penetration
+            (int Real, int Effective) armorClass = ammoInfo.GetArmorClass();
+            ammoInfo.RealArmorClassPen = armorClass.Real;
+            ammoInfo.EffectiveArmorClassPen = armorClass.Effective;
             AmmoCache.TryAdd(ammoInfo.Item.Name, ammoInfo);
-    
+        }
+
         return true;
     }
 }

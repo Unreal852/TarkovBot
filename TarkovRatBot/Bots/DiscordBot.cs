@@ -22,7 +22,7 @@ public class DiscordBot
         Bot.MessageReceived += OnMessageReceived;
         Bot.SelectMenuExecuted += OnSelectMenuExecuted;
         Bot.ButtonExecuted += OnButtonExecuted;
-        Bot.Log += OnLogAsync;
+        //Bot.Log += OnLogAsync;
     }
 
     public  DiscordSocketClient Bot   { get; }
@@ -166,7 +166,7 @@ public class DiscordBot
 
         if (itemInfo.ItemTypes.Contains(EItemType.Ammo) && TarkovCache.AmmoCache.TryGetValue(itemInfo.Name, out AmmoInfo ammoInfo))
         {
-            embedBuilder.Color = FromAmmoPenetration(ammoInfo);
+            embedBuilder.Color = FromAmmoPenetrationClass(ammoInfo.EffectiveArmorClassPen);
             componentBuilder = new ComponentBuilder().WithButton("Ammo Infos", $"{ButtonAmmoMoreInfos}@{itemInfo.Name}");
         }
 
@@ -184,39 +184,30 @@ public class DiscordBot
                 Timestamp = ammoInfo.Item.Updated,
                 Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
                 Fields = new List<EmbedFieldBuilder>(),
-                Color = FromAmmoPenetration(ammoInfo)
+                Color = FromAmmoPenetrationClass(ammoInfo.EffectiveArmorClassPen)
         };
+
         embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage                         ?? 0, true);
         embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
         embedBuilder.AddField("Armor Damages", ammoInfo.ArmorDamage                      ?? 0, true);
         embedBuilder.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
-        embedBuilder.AddField("Armor Class", GetArmorClass(ammoInfo), true);
+
+        embedBuilder.AddField("Armor Class Real (Effective)",
+                $"{ammoInfo.RealArmorClassPen} {(ammoInfo.RealArmorClassPen != ammoInfo.EffectiveArmorClassPen ? $"({ammoInfo.EffectiveArmorClassPen})" : string.Empty)}",
+                true);
         return embedBuilder.Build();
     }
 
-    private static Color FromAmmoPenetration(AmmoInfo ammoInfo)
+    private static Color FromAmmoPenetrationClass(int armorClass)
     {
-        return ammoInfo.PenetrationPower switch
+        return armorClass switch
         {
-                > 60 => Color.Red,
-                > 50 => Color.Orange,
-                > 40 => Color.Purple,
-                > 30 => Color.Blue,
-                > 20 => Color.Green,
-                _    => Color.LightGrey
-        };
-    }
-
-    private static int GetArmorClass(AmmoInfo ammoInfo)
-    {
-        return ammoInfo.PenetrationPower switch
-        {
-                > 60 => 6,
-                > 50 => 5,
-                > 40 => 4,
-                > 30 => 3,
-                > 20 => 2,
-                _    => 1
+                >= 6 => Color.Red,
+                >= 5 => Color.Orange,
+                >= 4 => Color.Purple,
+                >= 3 => Color.Blue,
+                >= 2 => Color.Green,
+                _   => Color.LightGrey
         };
     }
 }
