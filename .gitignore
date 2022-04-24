@@ -1,0 +1,9 @@
+﻿.idea/
+TarkovRatBot/obj/
+TarkovRatBot/bin/
+TarkovRatBot.Core/obj/
+TarkovRatBot.Core/bin/
+TarkovRatBot.Discord/obj/
+TarkovRatBot.Discord/bin/
+TarkovRatBot.Guilded/obj/
+TarkovRatBot.Guilded/bin/
