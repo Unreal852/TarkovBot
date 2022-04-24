@@ -2,7 +2,7 @@
 
 namespace TarkovRatBot.Core;
 
-public class TarkovCore
+public static class TarkovCore
 {
     public static GraphQlQuery ItemsByNameQuery { get; private set; }
     public static GraphQlQuery ItemsByIdsQuery { get; private set; }
