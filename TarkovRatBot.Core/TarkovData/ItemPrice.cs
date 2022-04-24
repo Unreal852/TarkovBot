@@ -2,7 +2,7 @@
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace TarkovRatBot.Tarkov;
+namespace TarkovRatBot.Core.TarkovData;
 
 public class ItemPrice
 {

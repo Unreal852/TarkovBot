@@ -3,10 +3,11 @@
 using Guilded;
 using Guilded.Base.Events;
 using Guilded.Base.Users;
-using TarkovRatBot.Tarkov;
-using static Program;
+using TarkovRatBot.Core;
+using TarkovRatBot.Core.TarkovData;
+using static TarkovRatBot.Core.TarkovCore;
 
-namespace TarkovRatBot.Bots;
+namespace TarkovRatBot.Guilded;
 
 public class GuildedBot
 {
@@ -45,7 +46,7 @@ public class GuildedBot
                 return;
             }
 
-            var result = await Queries.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
+            var result = await TarkovCore.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
             if (result is { Length: > 0 })
             {
                 foreach (ItemInfo itemInfo in result)

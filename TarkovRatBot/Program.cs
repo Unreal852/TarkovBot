@@ -1,7 +1,8 @@
 ﻿using TarkovRatBot;
-using TarkovRatBot.Bots;
-using TarkovRatBot.GraphQL;
-using TarkovRatBot.Tarkov;
+using TarkovRatBot.Core.TarkovData;
+using TarkovRatBot.Discord;
+using TarkovRatBot.Guilded;
+using static TarkovRatBot.Core.TarkovCore;
 
 public class Program
 {
@@ -10,19 +11,12 @@ public class Program
         return new Program().MainAsync();
     }
 
-    public static void WriteLine(string message, ConsoleColor color = ConsoleColor.White)
-    {
-        Console.ForegroundColor = color;
-        Console.WriteLine(message);
-        Console.ResetColor();
-    }
-
     private readonly GuildedBot GuildedBot = new(Consts.GuildedBotToken);
     private readonly DiscordBot DiscordBot = new(Consts.DiscordBotToken);
 
     private async Task MainAsync()
     {
-        Queries.InitQueries();
+        InitQueries();
 
         if (!await TarkovCache.CacheAmmoInfos())
             WriteLine("Failed to cache ammo data.", ConsoleColor.Red);
@@ -37,7 +31,7 @@ public class Program
 
     private void HandleInput()
     {
-        string? input;
+        string input;
         do
         {
             input = Console.ReadLine();

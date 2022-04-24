@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TarkovRatBot.Tarkov;
+namespace TarkovRatBot.Core.TarkovData;
 
 public class AmmoInfo
 {

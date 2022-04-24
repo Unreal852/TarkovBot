@@ -2,10 +2,9 @@
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using TarkovRatBot.Extensions;
-using static Program;
+using TarkovRatBot.Core.Extensions;
 
-namespace TarkovRatBot.GraphQL;
+namespace TarkovRatBot.Core.GraphQL;
 
 public class GraphQlQuery
 {

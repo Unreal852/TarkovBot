@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarkovRatBot.Discord", "Tar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarkovRatBot.Guilded", "TarkovRatBot.Guilded\TarkovRatBot.Guilded.csproj", "{A55118CF-04C8-4684-853C-ADFFD35E26D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarkovRatBot.Core", "TarkovRatBot.Core\TarkovRatBot.Core.csproj", "{03A6BFBA-4060-4F7E-9864-ED2C768D5ECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{A55118CF-04C8-4684-853C-ADFFD35E26D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A55118CF-04C8-4684-853C-ADFFD35E26D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A55118CF-04C8-4684-853C-ADFFD35E26D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03A6BFBA-4060-4F7E-9864-ED2C768D5ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03A6BFBA-4060-4F7E-9864-ED2C768D5ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03A6BFBA-4060-4F7E-9864-ED2C768D5ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03A6BFBA-4060-4F7E-9864-ED2C768D5ECF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

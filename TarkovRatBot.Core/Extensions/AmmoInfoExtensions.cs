@@ -1,6 +1,6 @@
-﻿using TarkovRatBot.Tarkov;
+﻿using TarkovRatBot.Core.TarkovData;
 
-namespace TarkovRatBot.Extensions;
+namespace TarkovRatBot.Core.Extensions;
 
 public static class AmmoInfoExtensions
 {

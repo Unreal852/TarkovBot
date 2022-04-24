@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using TarkovRatBot.Extensions;
+using TarkovRatBot.Core.Extensions;
 
-namespace TarkovRatBot.Tarkov;
+namespace TarkovRatBot.Core.TarkovData;
 
 public static class TarkovCache
 {
@@ -9,7 +9,7 @@ public static class TarkovCache
 
     public static async Task<bool> CacheAmmoInfos()
     {
-        AmmoInfo[] ammoInfos = await Queries.AmmoQuery.ExecuteAs<AmmoInfo[]>();
+        AmmoInfo[] ammoInfos = await TarkovCore.AmmoQuery.ExecuteAs<AmmoInfo[]>();
         if (ammoInfos == null || ammoInfos.Length == 0)
             return false;
         AmmoCache.Clear();

@@ -13,10 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Resources\ItemsByIDs.graphql" />
-      <EmbeddedResource Include="Resources\ItemsByName.graphql" />
       <None Remove="Resources\Ammo.graphql" />
-      <EmbeddedResource Include="Resources\Ammo.graphql" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TarkovRatBot.Discord\TarkovRatBot.Discord.csproj" />
+      <ProjectReference Include="..\TarkovRatBot.Guilded\TarkovRatBot.Guilded.csproj" />
     </ItemGroup>
 
 </Project>

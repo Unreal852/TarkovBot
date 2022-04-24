@@ -1,11 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using TarkovRatBot.Extensions;
-using TarkovRatBot.Tarkov;
-using static Program;
+using TarkovRatBot.Core;
+using TarkovRatBot.Core.Extensions;
+using TarkovRatBot.Core.TarkovData;
+using static TarkovRatBot.Core.TarkovCore;
 
-namespace TarkovRatBot.Bots;
+namespace TarkovRatBot.Discord;
 
 public class DiscordBot
 {
@@ -61,7 +62,7 @@ public class DiscordBot
         {
             case SelectMenuItemChoiceId:
             {
-                var result = await Queries.ItemsByIdsQuery.ExecuteAs<ItemInfo[]>(arg.Data.Values.FirstOrDefault());
+                var result = await TarkovCore.ItemsByIdsQuery.ExecuteAs<ItemInfo[]>(arg.Data.Values.FirstOrDefault());
                 if (result is { Length: 0 })
                     return;
                 await arg.Message.DeleteAsync();
@@ -102,7 +103,7 @@ public class DiscordBot
                 return;
             }
 
-            var result = await Queries.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
+            var result = await TarkovCore.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
             if (result is { Length: > 0 })
             {
                 if (result.Length > 1)

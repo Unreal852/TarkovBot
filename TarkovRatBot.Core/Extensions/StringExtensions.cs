@@ -1,4 +1,4 @@
-﻿namespace TarkovRatBot.Extensions;
+﻿namespace TarkovRatBot.Core.Extensions;
 
 public static class StringExtensions
 {

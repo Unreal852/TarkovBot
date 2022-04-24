@@ -1,8 +1,8 @@
-﻿using TarkovRatBot.GraphQL;
+﻿using TarkovRatBot.Core.GraphQL;
 
-namespace TarkovRatBot;
+namespace TarkovRatBot.Core;
 
-public class Queries
+public class TarkovCore
 {
     public static GraphQlQuery ItemsByNameQuery { get; private set; }
     public static GraphQlQuery ItemsByIdsQuery { get; private set; }
@@ -13,5 +13,12 @@ public class Queries
         ItemsByNameQuery = new GraphQlQuery("ItemsByName");
         ItemsByIdsQuery = new GraphQlQuery("ItemsByIDs");
         AmmoQuery = new GraphQlQuery("Ammo");
+    }
+    
+    public static void WriteLine(string message, ConsoleColor color = ConsoleColor.White)
+    {
+        Console.ForegroundColor = color;
+        Console.WriteLine(message);
+        Console.ResetColor();
     }
 }

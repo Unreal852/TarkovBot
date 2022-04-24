@@ -3,7 +3,7 @@
 // ReSharper disable IdentifierTypo
 // ReSharper disable StringLiteralTypo
 
-namespace TarkovRatBot.Tarkov;
+namespace TarkovRatBot.Core.TarkovData;
 
 public enum EItemType
 {

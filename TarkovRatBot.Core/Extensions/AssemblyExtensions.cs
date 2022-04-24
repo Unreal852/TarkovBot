@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace TarkovRatBot.Extensions;
+namespace TarkovRatBot.Core.Extensions;
 
 public static class AssemblyExtensions
 {
