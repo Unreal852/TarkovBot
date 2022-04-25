@@ -4,7 +4,7 @@
 
 namespace TarkovRatBot.Core.TarkovData;
 
-public class ItemInfo
+public class Item
 {
     [JsonPropertyName("id")]           public string      Id              { get; set; }
     [JsonPropertyName("name")]         public string      Name            { get; set; }

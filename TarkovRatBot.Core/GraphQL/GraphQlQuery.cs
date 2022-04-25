@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TarkovRatBot.Core.Extensions;
+using static TarkovRatBot.Core.TarkovCore;
 
 namespace TarkovRatBot.Core.GraphQL;
 
@@ -23,7 +24,7 @@ public class GraphQlQuery
         if (string.IsNullOrWhiteSpace(Query))
         {
             IsValid = false;
-            Console.WriteLine($"Failed to load file : {graphQlFileName}");
+            WriteLine($"Failed to load file : {graphQlFileName}", ConsoleColor.Red);
         }
         else
             IsValid = true;

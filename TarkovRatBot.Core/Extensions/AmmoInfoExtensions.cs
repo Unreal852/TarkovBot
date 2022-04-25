@@ -1,10 +1,11 @@
 ﻿using TarkovRatBot.Core.TarkovData;
+using TarkovRatBot.Core.TarkovData.Ammos;
 
 namespace TarkovRatBot.Core.Extensions;
 
 public static class AmmoInfoExtensions
 {
-    public static (int Real, int Effective) GetArmorClass(this AmmoInfo ammoInfo)
+    public static (int Real, int Effective) GetArmorClass(this Ammo ammoInfo)
     {
         return ammoInfo.PenetrationPower switch
         {

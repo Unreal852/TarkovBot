@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <None Remove="Resources\ItemsByIDs.graphql" />
+      <EmbeddedResource Include="Resources\Crafts.graphql" />
       <EmbeddedResource Include="Resources\ItemsByIDs.graphql" />
       <None Remove="Resources\ItemsByName.graphql" />
       <EmbeddedResource Include="Resources\ItemsByName.graphql" />

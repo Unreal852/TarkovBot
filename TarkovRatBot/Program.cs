@@ -1,5 +1,4 @@
 ﻿using TarkovRatBot;
-using TarkovRatBot.Core.TarkovData;
 using TarkovRatBot.Discord;
 using TarkovRatBot.Guilded;
 using static TarkovRatBot.Core.TarkovCore;
@@ -16,12 +15,7 @@ public class Program
 
     private async Task MainAsync()
     {
-        InitQueries();
-
-        if (!await TarkovCache.CacheAmmoInfos())
-            WriteLine("Failed to cache ammo data.", ConsoleColor.Red);
-        else
-            WriteLine($"Successfully cached {TarkovCache.AmmoCache.Count} ammos.", ConsoleColor.Green);
+        await Initialize();
 
         await DiscordBot.Initialize();
         await GuildedBot.Initialize();

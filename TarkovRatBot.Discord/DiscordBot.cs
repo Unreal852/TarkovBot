@@ -4,15 +4,14 @@ using Discord.WebSocket;
 using TarkovRatBot.Core;
 using TarkovRatBot.Core.Extensions;
 using TarkovRatBot.Core.TarkovData;
+using TarkovRatBot.Core.TarkovData.Ammos;
+using TarkovRatBot.Discord.Extensions;
 using static TarkovRatBot.Core.TarkovCore;
 
 namespace TarkovRatBot.Discord;
 
 public class DiscordBot
 {
-    private const string SelectMenuItemChoiceId = "sel-item-name";
-    private const string ButtonAmmoMoreInfos    = "btn-ammo-more-infos";
-
     public DiscordBot(string token)
     {
         if (string.IsNullOrWhiteSpace(token))
@@ -60,13 +59,13 @@ public class DiscordBot
     {
         switch (arg.Data.CustomId)
         {
-            case SelectMenuItemChoiceId:
+            case Consts.SelectMenuItemChoiceId:
             {
-                var result = await TarkovCore.ItemsByIdsQuery.ExecuteAs<ItemInfo[]>(arg.Data.Values.FirstOrDefault());
+                var result = await TarkovCore.ItemsByIdsQuery.ExecuteAs<Item[]>(arg.Data.Values.FirstOrDefault());
                 if (result is { Length: 0 })
                     return;
                 await arg.Message.DeleteAsync();
-                var embed = BuildItemEmbed(result[0]);
+                var embed = result[0].BuildItemEmbed();
                 await arg.Message.Channel.SendMessageAsync(embed: embed.Embed, components: embed.Component);
                 break;
             }
@@ -78,11 +77,11 @@ public class DiscordBot
         string[] split = arg.Data.CustomId.Split('@');
         switch (split[0])
         {
-            case ButtonAmmoMoreInfos:
+            case Consts.ButtonAmmoMoreInfosId:
             {
-                if (TarkovCache.AmmoCache.TryGetValue(split.Length == 2 ? split[1] : string.Empty, out AmmoInfo ammoInfo))
+                if (AmmoCache.Cache.TryGetValue(split.Length == 2 ? split[1] : string.Empty, out Ammo ammoInfo))
                 {
-                    await arg.RespondAsync(embed: BuildAmmoEmbed(ammoInfo));
+                    await arg.RespondAsync(embed: ammoInfo.BuildAmmoEmbed());
                 }
 
                 break;
@@ -103,7 +102,7 @@ public class DiscordBot
                 return;
             }
 
-            var result = await TarkovCore.ItemsByNameQuery.ExecuteAs<ItemInfo[]>(split[1]);
+            var result = await ItemsByNameQuery.ExecuteAs<Item[]>(split[1]);
             if (result is { Length: > 0 })
             {
                 if (result.Length > 1)
@@ -115,7 +114,7 @@ public class DiscordBot
 
                     var componentBuilder = new ComponentBuilder();
                     var rowBuilder = new ActionRowBuilder();
-                    var selectMenuBuilder = new SelectMenuBuilder { CustomId = SelectMenuItemChoiceId };
+                    var selectMenuBuilder = new SelectMenuBuilder { CustomId = Consts.SelectMenuItemChoiceId };
                     for (var i = 0; i < (result.Length < 20 ? result.Length : 20); i++)
                         selectMenuBuilder.AddOption(result[i].Name, result[i].Id);
                     rowBuilder.Components.Add(selectMenuBuilder.Build());
@@ -124,104 +123,10 @@ public class DiscordBot
                     return;
                 }
 
-                var message = BuildItemEmbed(result[0]);
+                var message = result[0].BuildItemEmbed();
 
                 await msg.Channel.SendMessageAsync(embed: message.Embed, components: message.Component);
             }
         }
-    }
-
-    private static (Embed Embed, MessageComponent Component) BuildItemEmbed(ItemInfo itemInfo)
-    {
-        ComponentBuilder componentBuilder = null;
-        var embedBuilder = new EmbedBuilder
-        {
-                Title = $"{itemInfo.Name} ({itemInfo.ShortName})",
-                Url = itemInfo.WikiLink,
-                ThumbnailUrl = itemInfo.ImageLink,
-                Footer = new EmbedFooterBuilder { Text = "Last Updated" },
-                Timestamp = itemInfo.Updated,
-                Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
-                Fields = new List<EmbedFieldBuilder>()
-        };
-        embedBuilder.AddField(new EmbedFieldBuilder { Name = "Base Price", Value = itemInfo.BasePrice ?? 0, IsInline = true });
-        ItemPrice sellFor = itemInfo.SellFor.Where(s => s.Price is > 0).MaxBy(s => s.Price);
-        ItemPrice buyFor = itemInfo.BuyFor.Where(s => s.Price is > 0).MinBy(s => s.Price);
-        if (buyFor != null)
-        {
-            string loyaltiRequirement = "";
-            if (buyFor.Requirements is { Length: > 0 })
-            {
-                PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == ERequirementType.LoyaltyLevel);
-                if (requirement != null)
-                    loyaltiRequirement = $"(LL {requirement.Value ?? 0})";
-            }
-
-            embedBuilder.AddField(new EmbedFieldBuilder
-            {
-                    Name = $"Buy From {buyFor.ItemSourceName.FirstCharToUpperCase()} {loyaltiRequirement}",
-                    Value = $"{buyFor.Price} {buyFor.Currency}", IsInline = true
-            });
-        }
-
-        if (sellFor != null)
-        {
-            embedBuilder.AddField(new EmbedFieldBuilder
-            {
-                    Name = $"Sell To {sellFor.ItemSourceName.FirstCharToUpperCase()}",
-                    Value = $"{sellFor.Price} {sellFor.Currency}", IsInline = true
-            });
-        }
-
-        if (itemInfo.ItemTypes.Contains(EItemType.Ammo) && TarkovCache.AmmoCache.TryGetValue(itemInfo.Name, out AmmoInfo ammoInfo))
-        {
-            embedBuilder.Color = FromAmmoPenetrationClass(ammoInfo.EffectiveArmorClassPen);
-            componentBuilder = new ComponentBuilder().WithButton("Ammo Infos", $"{ButtonAmmoMoreInfos}@{itemInfo.Name}");
-        }
-
-        return (embedBuilder.Build(), componentBuilder?.Build());
-    }
-
-    private static Embed BuildAmmoEmbed(AmmoInfo ammoInfo)
-    {
-        var embedBuilder = new EmbedBuilder
-        {
-                Title = $"{ammoInfo.Item.Name} ({ammoInfo.Item.ShortName})",
-                Url = ammoInfo.Item.WikiLink,
-                ThumbnailUrl = ammoInfo.Item.ImageLink,
-                Footer = new EmbedFooterBuilder { Text = "Last Updated" },
-                Timestamp = ammoInfo.Item.Updated,
-                Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
-                Fields = new List<EmbedFieldBuilder>(),
-                Color = FromAmmoPenetrationClass(ammoInfo.EffectiveArmorClassPen)
-        };
-
-        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage      ?? 0, true);
-        embedBuilder.AddField("Damages (Armor)", ammoInfo.ArmorDamage ?? 0, true);
-        embedBuilder.AddField("Velocity ", $"{ammoInfo.InitialSpeed ?? 0} m/s", true);
-        embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
-        embedBuilder.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
-        if (ammoInfo.LightBleedModifier is > 0)
-            embedBuilder.AddField("Light Bleed Chances", (int?)(ammoInfo.LightBleedModifier * 100) ?? 0, true);
-        if (ammoInfo.HeavyBleedModifier is > 0)
-            embedBuilder.AddField("Heavy Bleed Chances", (int?)(ammoInfo.HeavyBleedModifier * 100) ?? 0, true);
-
-        embedBuilder.AddField("Armor Class Real (Effective)",
-                $"{ammoInfo.RealArmorClassPen} {(ammoInfo.RealArmorClassPen != ammoInfo.EffectiveArmorClassPen ? $"({ammoInfo.EffectiveArmorClassPen})" : string.Empty)}",
-                true);
-        return embedBuilder.Build();
-    }
-
-    private static Color FromAmmoPenetrationClass(int armorClass)
-    {
-        return armorClass switch
-        {
-                >= 6 => Color.Red,
-                >= 5 => Color.Orange,
-                >= 4 => Color.Purple,
-                >= 3 => Color.Blue,
-                >= 2 => Color.Green,
-                _    => Color.LightGrey
-        };
     }
 }
