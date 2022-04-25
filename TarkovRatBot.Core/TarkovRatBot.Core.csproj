@@ -7,14 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Resources\ItemsByIDs.graphql" />
-      <EmbeddedResource Include="Resources\Crafts.graphql" />
-      <EmbeddedResource Include="Resources\ItemsByIDs.graphql" />
-      <None Remove="Resources\ItemsByName.graphql" />
-      <EmbeddedResource Include="Resources\ItemsByName.graphql" />
-      <None Remove="Resources\schema.graphql" />
-      <EmbeddedResource Include="Resources\schema.graphql" />
-      <None Remove="Resources\Ammo.graphql" />
-      <EmbeddedResource Include="Resources\Ammo.graphql" />
+        <None Remove="Resources\ItemsByIDs.graphql"/>
+        <EmbeddedResource Include="Resources\Crafts.graphql"/>
+        <EmbeddedResource Include="Resources\ItemsByIDs.graphql"/>
+        <None Remove="Resources\ItemsByName.graphql"/>
+        <EmbeddedResource Include="Resources\ItemsByName.graphql"/>
+        <None Remove="Resources\schema.graphql"/>
+        <EmbeddedResource Include="Resources\schema.graphql"/>
+        <None Remove="Resources\Ammo.graphql"/>
+        <EmbeddedResource Include="Resources\Ammo.graphql"/>
     </ItemGroup>
 </Project>

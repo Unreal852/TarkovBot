@@ -9,6 +9,6 @@ public class Quest
     [JsonPropertyName("wikiLink")]     public string           WikiLink          { get; set; }
     [JsonPropertyName("unlocks")]      public string[]         Unlocks           { get; set; }
     [JsonPropertyName("requirements")] public QuestRequirement QuestRequirements { get; set; }
-    [JsonPropertyName("giver")]        public Trader       Giver             { get; set; }
-    [JsonPropertyName("turnin")]       public Trader       TurnIn            { get; set; }
+    [JsonPropertyName("giver")]        public Trader           Giver             { get; set; }
+    [JsonPropertyName("turnin")]       public Trader           TurnIn            { get; set; }
 }

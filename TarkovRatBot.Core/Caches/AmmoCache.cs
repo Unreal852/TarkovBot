@@ -11,7 +11,7 @@ public class AmmoCache : TarkovCache<string, Ammo>
         Ammo[] ammoInfos = await AmmoQuery.ExecuteAs<Ammo[]>();
         if (ammoInfos == null || ammoInfos.Length == 0)
         {
-            WriteLine("[CACHE] Failed to cache ammos...", ConsoleColor.Red);
+            WriteLine("[CACHE] Failed to cache ammos !", ConsoleColor.Red);
             return false;
         }
 

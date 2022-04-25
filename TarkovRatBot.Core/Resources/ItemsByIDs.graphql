@@ -24,7 +24,7 @@
                 value
             }
         }
-        sellFor 
+        sellFor
         {
             source
             currency

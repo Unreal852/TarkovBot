@@ -3,7 +3,6 @@
 using Guilded;
 using Guilded.Base.Events;
 using Guilded.Base.Users;
-using TarkovRatBot.Core;
 using TarkovRatBot.Core.TarkovData;
 using static TarkovRatBot.Core.TarkovCore;
 
@@ -16,7 +15,7 @@ public class GuildedBot
         if (string.IsNullOrWhiteSpace(token))
             throw new ArgumentException($"The specified parameter {nameof(token)} is null or empty.");
         Token = token;
-        Bot = new(token);
+        Bot = new GuildedBotClient(token);
         Bot.Prepared.Subscribe(OnBotReady);
         Bot.MessageCreated.Subscribe(OnMessageReceived);
     }
@@ -46,12 +45,10 @@ public class GuildedBot
                 return;
             }
 
-            var result = await TarkovCore.ItemsByNameQuery.ExecuteAs<Item[]>(split[1]);
+            Item[] result = await ItemsByNameQuery.ExecuteAs<Item[]>(split[1]);
             if (result is { Length: > 0 })
-            {
                 foreach (Item itemInfo in result)
-                {
-                    /*
+                        /*
                     Embed embed = new Embed
                     {
                             Title = $"{itemInfo.Name} ({itemInfo.ShortName})",
@@ -73,8 +70,6 @@ public class GuildedBot
                                          $"Average Price: {itemInfo.Average24hPrice}\n" +
                                          $"Highest Price: {itemInfo.High24hPrice}\n"    +
                                          $"Last Updated {itemInfo.Updated:g}");
-                }
-            }
         }
     }
 }

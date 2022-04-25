@@ -5,13 +5,14 @@ using static TarkovRatBot.Core.TarkovCore;
 
 public class Program
 {
+    private readonly DiscordBot DiscordBot = new(Consts.DiscordBotToken);
+
+    private readonly GuildedBot GuildedBot = new(Consts.GuildedBotToken);
+
     public static Task Main(string[] args)
     {
         return new Program().MainAsync();
     }
-
-    private readonly GuildedBot GuildedBot = new(Consts.GuildedBotToken);
-    private readonly DiscordBot DiscordBot = new(Consts.DiscordBotToken);
 
     private async Task MainAsync()
     {

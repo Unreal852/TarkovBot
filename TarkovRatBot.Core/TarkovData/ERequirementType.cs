@@ -7,5 +7,5 @@ public enum ERequirementType
     [JsonPropertyName("playerLevel")]    PlayerLevel,
     [JsonPropertyName("loyaltyLevel")]   LoyaltyLevel,
     [JsonPropertyName("questCompleted")] QuestCompleted,
-    [JsonPropertyName("stationLevel")]   StationLevel,
+    [JsonPropertyName("stationLevel")]   StationLevel
 }

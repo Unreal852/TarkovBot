@@ -3,20 +3,19 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TarkovRatBot.Core.Extensions;
-using static TarkovRatBot.Core.TarkovCore;
 
 namespace TarkovRatBot.Core.GraphQL;
 
 public class GraphQlQuery
 {
-    private readonly JsonSerializerOptions JsonSerializerOptions = new()
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
             Converters = { new JsonStringEnumConverter() }
     };
-    
+
     public GraphQlQuery(string graphQlFileName)
     {
-        HttpClient = new();
+        HttpClient = new HttpClient();
         if (!graphQlFileName.EndsWith(".graphql"))
             graphQlFileName += ".graphql";
         Query = Assembly.GetExecutingAssembly().ReadFileToEnd(graphQlFileName);
@@ -27,7 +26,9 @@ public class GraphQlQuery
             WriteLine($"Failed to load file : {graphQlFileName}", ConsoleColor.Red);
         }
         else
+        {
             IsValid = true;
+        }
     }
 
     private HttpClient HttpClient       { get; }

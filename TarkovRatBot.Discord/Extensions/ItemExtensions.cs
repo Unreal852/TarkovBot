@@ -26,7 +26,7 @@ public static class ItemExtensions
         ItemPrice buyFor = item.BuyFor.Where(s => s.Price is > 0).MinBy(s => s.Price);
         if (buyFor != null)
         {
-            string loyaltiRequirement = "";
+            var loyaltiRequirement = "";
             if (buyFor.Requirements is { Length: > 0 })
             {
                 PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == ERequirementType.LoyaltyLevel);
@@ -42,13 +42,11 @@ public static class ItemExtensions
         }
 
         if (sellFor != null)
-        {
             embedBuilder.AddField(new EmbedFieldBuilder
             {
                     Name = $"Sell To {sellFor.ItemSourceName.FirstCharToUpperCase()}",
                     Value = $"{sellFor.Price} {sellFor.Currency}", IsInline = true
             });
-        }
 
         if (item.ItemTypes.Contains(EItemType.Ammo) && TarkovCore.AmmoCache.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
         {

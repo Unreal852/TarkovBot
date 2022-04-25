@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TarkovRatBot.Core\TarkovRatBot.Core.csproj" />
+        <ProjectReference Include="..\TarkovRatBot.Core\TarkovRatBot.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Guilded" Version="0.7.4" />
+        <PackageReference Include="Guilded" Version="0.7.4"/>
     </ItemGroup>
 
 </Project>
