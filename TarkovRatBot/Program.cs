@@ -8,7 +8,7 @@ public class Program
 {
     private DiscordBot DiscordBot { get; } = new();
 
-    private GuildedBot GuildedBot { get; set; }
+    private GuildedBot GuildedBot { get; } = new();
 
     public static Task Main(string[] args)
     {
@@ -24,12 +24,18 @@ public class Program
             return;
         }
 
-        (string DiscordToken, string GuildedToken) = JsonSerializer.Deserialize<(string, string)>(filePath);
+        await using FileStream reader = File.OpenRead(filePath);
+        var tokens = await JsonSerializer.DeserializeAsync<BotsTokens>(reader);
+        if (tokens == null)
+        {
+            WriteLine("Failed to deserialize tokens.", ConsoleColor.Red);
+            return;
+        }
 
         await Initialize();
 
-        await DiscordBot.Initialize(DiscordToken);
-        await GuildedBot.Initialize(GuildedToken);
+        await DiscordBot.Initialize(tokens.DiscordToken);
+        await GuildedBot.Initialize(tokens.GuildedToken);
 
         HandleInput();
     }
