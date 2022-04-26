@@ -10,12 +10,9 @@ namespace TarkovRatBot.Guilded;
 
 public class GuildedBot
 {
-    public GuildedBot(string token)
+    public GuildedBot()
     {
-        if (string.IsNullOrWhiteSpace(token))
-            throw new ArgumentException($"The specified parameter {nameof(token)} is null or empty.");
-        Token = token;
-        Bot = new GuildedBotClient(token);
+        Bot = new GuildedBotClient();
         Bot.Prepared.Subscribe(OnBotReady);
         Bot.MessageCreated.Subscribe(OnMessageReceived);
     }
@@ -23,10 +20,16 @@ public class GuildedBot
     public  GuildedBotClient Bot   { get; }
     private string           Token { get; }
 
-    public async Task Initialize()
+    public async Task Initialize(string token)
     {
         WriteLine("Initializing Guilded Bot...", ConsoleColor.Yellow);
-        await Bot.ConnectAsync();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            WriteLine("Failed to initialize guilded bot. Missing Token.", ConsoleColor.Red);
+            return;
+        }
+
+        await Bot.ConnectAsync(token);
     }
 
     private void OnBotReady(Me me)

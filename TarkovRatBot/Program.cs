@@ -1,13 +1,14 @@
-﻿using TarkovRatBot;
+﻿using System.Text.Json;
+using TarkovRatBot;
 using TarkovRatBot.Discord;
 using TarkovRatBot.Guilded;
 using static TarkovRatBot.Core.TarkovCore;
 
 public class Program
 {
-    private readonly DiscordBot DiscordBot = new(Consts.DiscordBotToken);
+    private DiscordBot DiscordBot { get; } = new();
 
-    private readonly GuildedBot GuildedBot = new(Consts.GuildedBotToken);
+    private GuildedBot GuildedBot { get; set; }
 
     public static Task Main(string[] args)
     {
@@ -16,10 +17,19 @@ public class Program
 
     private async Task MainAsync()
     {
+        string filePath = Path.Combine(Environment.CurrentDirectory, Consts.TokensFile);
+        if (!File.Exists(filePath))
+        {
+            WriteLine("Missing tokens file.", ConsoleColor.Red);
+            return;
+        }
+
+        (string DiscordToken, string GuildedToken) = JsonSerializer.Deserialize<(string, string)>(filePath);
+
         await Initialize();
 
-        await DiscordBot.Initialize();
-        await GuildedBot.Initialize();
+        await DiscordBot.Initialize(DiscordToken);
+        await GuildedBot.Initialize(GuildedToken);
 
         HandleInput();
     }

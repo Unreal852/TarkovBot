@@ -9,11 +9,8 @@ namespace TarkovRatBot.Discord;
 
 public class DiscordBot
 {
-    public DiscordBot(string token)
+    public DiscordBot()
     {
-        if (string.IsNullOrWhiteSpace(token))
-            throw new ArgumentException($"The specified parameter {nameof(token)} is null or empty.");
-        Token = token;
         Bot = new DiscordSocketClient();
         Bot.Ready += OnBotReady;
         Bot.SlashCommandExecuted += OnSlashCommandExecuted;
@@ -21,13 +18,18 @@ public class DiscordBot
         Bot.ButtonExecuted += OnButtonExecuted;
     }
 
-    public  DiscordSocketClient Bot   { get; }
-    private string              Token { get; }
+    public DiscordSocketClient Bot { get; }
 
-    public async Task Initialize()
+    public async Task Initialize(string token)
     {
         WriteLine("Initializing Discord Bot...", ConsoleColor.Yellow);
-        await Bot.LoginAsync(TokenType.Bot, Token);
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            WriteLine("Failed to initialize discord bot. Missing Token.", ConsoleColor.Red);
+            return;
+        }
+
+        await Bot.LoginAsync(TokenType.Bot, token);
         await Bot.StartAsync();
     }
 
