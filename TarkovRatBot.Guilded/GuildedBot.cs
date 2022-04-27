@@ -1,9 +1,13 @@
 ﻿// ReSharper disable IdentifierTypo
 
+using System.Collections.ObjectModel;
 using Guilded;
+using Guilded.Base.Content;
+using Guilded.Base.Embeds;
 using Guilded.Base.Events;
 using Guilded.Base.Users;
 using TarkovRatBot.Core.TarkovData;
+using TarkovRatBot.Guilded.Extensions;
 using static TarkovRatBot.Core.TarkovCore;
 
 namespace TarkovRatBot.Guilded;
@@ -18,7 +22,6 @@ public class GuildedBot
     }
 
     public  GuildedBotClient Bot   { get; }
-    private string           Token { get; }
 
     public async Task Initialize(string token)
     {
@@ -49,30 +52,27 @@ public class GuildedBot
             }
 
             Item[] result = await ItemsByNameQuery.ExecuteAs<Item[]>(split[1]);
-            if (result is { Length: > 0 })
-                foreach (Item itemInfo in result)
-                        /*
-                    Embed embed = new Embed
-                    {
-                            Title = $"{itemInfo.Name} ({itemInfo.ShortName})",
-                            Thumbnail = new EmbedMedia(itemInfo.ImageLink),
-                            Fields = new Collection<EmbedField>
-                            {
-                                    new("Base Price", itemInfo.BasePrice.ToString()),
-                                    new("Lowest Price (24h)", itemInfo.Low24hPrice.ToString()),
-                                    new("Average Price (24h)", itemInfo.Average24hPrice.ToString()),
-                                    new("Highest Price (24h)", itemInfo.High24hPrice.ToString()),
-                            },
-                            Timestamp = itemInfo.Updated,
-                            Footer = new EmbedFooter("Last Updated"),
-                    }; */
+            if (result is { Length: 0 })
+            {
+                await msg.ReplyAsync($"No items found for '{split[1]}'", true);
+                return;
+            }
 
-                    await msg.ReplyAsync($"{itemInfo.Name} ({itemInfo.ShortName}): \n " +
-                                         $"Base Price: {itemInfo.BasePrice}\n"          +
-                                         $"Lowest Price: {itemInfo.Low24hPrice}\n"      +
-                                         $"Average Price: {itemInfo.Average24hPrice}\n" +
-                                         $"Highest Price: {itemInfo.High24hPrice}\n"    +
-                                         $"Last Updated {itemInfo.Updated:g}");
+            if (result.Length > 1)
+            {
+                
+                return;
+            }
+
+            foreach (var embed in result[0].BuildMessageContent())
+            {
+                if (embed == null)
+                {
+                    continue;
+                }
+
+                await Bot.CreateMessageAsync(msg.ChannelId, false, false, new Guid[]{msg.Message.Id}, embed);
+            }
         }
     }
 }

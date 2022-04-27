@@ -9,19 +9,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="GraphQL\ItemsByName.graphql"/>
+        <None Remove="GraphQL\ItemsByName.graphql" />
         <None Update="TarkovRatBotTokens.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Resources\Ammo.graphql"/>
+        <None Remove="Resources\Ammo.graphql" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TarkovRatBot.Discord\TarkovRatBot.Discord.csproj"/>
-        <ProjectReference Include="..\TarkovRatBot.Guilded\TarkovRatBot.Guilded.csproj"/>
+        <ProjectReference Include="..\TarkovRatBot.Discord\TarkovRatBot.Discord.csproj" />
+        <ProjectReference Include="..\TarkovRatBot.Guilded\TarkovRatBot.Guilded.csproj" />
     </ItemGroup>
 
 </Project>
