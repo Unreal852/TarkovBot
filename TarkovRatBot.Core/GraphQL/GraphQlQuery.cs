@@ -23,7 +23,7 @@ public class GraphQlQuery
         if (string.IsNullOrWhiteSpace(Query))
         {
             IsValid = false;
-            WriteLine($"Failed to load file : {graphQlFileName}", ConsoleColor.Red);
+            TarkovCore.WriteLine($"Failed to load file : {graphQlFileName}", ConsoleColor.Red);
         }
         else
         {

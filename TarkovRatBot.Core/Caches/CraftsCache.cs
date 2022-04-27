@@ -6,18 +6,18 @@ public class CraftsCache : TarkovCache<string, Craft>
 {
     public override async Task<bool> UpdateCache()
     {
-        WriteLine("[CACHE] Caching crafts...", ConsoleColor.Yellow);
-        Craft[] crafts = await CraftQuery.ExecuteAs<Craft[]>();
+        TarkovCore.WriteLine("[CACHE] Caching crafts...", ConsoleColor.Yellow);
+        Craft[] crafts = await TarkovCore.CraftQuery.ExecuteAs<Craft[]>();
         if (crafts == null || crafts.Length == 0)
         {
-            WriteLine("[CACHE] Failed to cache crafts !", ConsoleColor.Red);
+            TarkovCore.WriteLine("[CACHE] Failed to cache crafts !", ConsoleColor.Red);
             return false;
         }
 
         Cache.Clear();
         foreach (Craft craft in crafts) Cache.TryAdd(craft.Id, craft);
 
-        WriteLine($"[CACHE] Successfully cached {Count} crafts !", ConsoleColor.Green);
+        TarkovCore.WriteLine($"[CACHE] Successfully cached {Count} crafts !", ConsoleColor.Green);
         return true;
     }
 }

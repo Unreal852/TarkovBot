@@ -7,11 +7,11 @@ public class AmmoCache : TarkovCache<string, Ammo>
 {
     public override async Task<bool> UpdateCache()
     {
-        WriteLine("[CACHE] Caching ammos...", ConsoleColor.Yellow);
-        Ammo[] ammoInfos = await AmmoQuery.ExecuteAs<Ammo[]>();
+        TarkovCore.WriteLine("[CACHE] Caching ammos...", ConsoleColor.Yellow);
+        Ammo[] ammoInfos = await TarkovCore.AmmoQuery.ExecuteAs<Ammo[]>();
         if (ammoInfos == null || ammoInfos.Length == 0)
         {
-            WriteLine("[CACHE] Failed to cache ammos !", ConsoleColor.Red);
+            TarkovCore.WriteLine("[CACHE] Failed to cache ammos !", ConsoleColor.Red);
             return false;
         }
 
@@ -25,7 +25,7 @@ public class AmmoCache : TarkovCache<string, Ammo>
             Cache.TryAdd(ammoInfo.Item.Id, ammoInfo);
         }
 
-        WriteLine($"[CACHE] Successfully cached {Count} ammos !", ConsoleColor.Green);
+        TarkovCore.WriteLine($"[CACHE] Successfully cached {Count} ammos !", ConsoleColor.Green);
         return true;
     }
 }
