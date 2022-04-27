@@ -8,7 +8,7 @@ public static class AmmoExtensions
 {
     public static Embed BuildAmmoEmbed(this Ammo ammoInfo)
     {
-        var embed = new Embed()
+        var embed = new Embed
         {
                 Title = $"{ammoInfo.Item.Name} ({ammoInfo.Item.ShortName})",
                 Url = new Uri(ammoInfo.Item.WikiLink),

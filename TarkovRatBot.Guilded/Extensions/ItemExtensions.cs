@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Guilded.Base.Content;
-using Guilded.Base.Embeds;
+﻿using Guilded.Base.Embeds;
 using TarkovRatBot.Core;
 using TarkovRatBot.Core.Extensions;
 using TarkovRatBot.Core.TarkovData;
@@ -13,8 +11,8 @@ public static class ItemExtensions
     public static Embed[] BuildMessageContent(this Item item)
     {
         Embed[] embeds = new Embed[2];
-        
-        var embed = new Embed()    
+
+        var embed = new Embed    
         {
             Title = $"{item.Name} ({item.ShortName})",
             Url =  new Uri(item.WikiLink),
