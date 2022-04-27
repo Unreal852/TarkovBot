@@ -18,7 +18,7 @@ public static class TarkovCore
         await CraftsCache.UpdateCache();
     }
 
-    public static void WriteLine(string message, ConsoleColor color = ConsoleColor.White, string prefix = null)
+    public static void WriteLine(string message, ConsoleColor color = ConsoleColor.White)
     {
         Console.ForegroundColor = color;
         Console.WriteLine($"[{DateTime.UtcNow:T}] {message}");
