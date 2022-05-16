@@ -5,7 +5,7 @@
 
 namespace TarkovRatBot.Core.TarkovData;
 
-public enum EItemType
+public enum ItemType
 {
     [JsonPropertyName("ammo")]       Ammo,
     [JsonPropertyName("ammoBox")]    AmmoBox,

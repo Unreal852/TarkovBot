@@ -2,7 +2,7 @@
 
 namespace TarkovRatBot.Core.TarkovData;
 
-public enum ERequirementType
+public enum RequirementType
 {
     [JsonPropertyName("playerLevel")]    PlayerLevel,
     [JsonPropertyName("loyaltyLevel")]   LoyaltyLevel,

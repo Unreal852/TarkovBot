@@ -16,6 +16,19 @@ public class DiscordBot
         Bot.SlashCommandExecuted += OnSlashCommandExecuted;
         Bot.SelectMenuExecuted += OnSelectMenuExecuted;
         Bot.ButtonExecuted += OnButtonExecuted;
+        Bot.Log += BotOnLog;
+    }
+
+    private Task BotOnLog(LogMessage arg)
+    {
+        WriteLine(arg.Message);
+        if (arg.Exception != null)
+        {
+            WriteLine(arg.Exception.Message);
+            WriteLine(arg.Exception.StackTrace);
+        }
+
+        return Task.CompletedTask;
     }
 
     public DiscordSocketClient Bot { get; }

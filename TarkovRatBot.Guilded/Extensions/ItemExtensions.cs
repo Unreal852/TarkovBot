@@ -1,4 +1,6 @@
-﻿using Guilded.Base.Embeds;
+﻿using System.Collections.ObjectModel;
+using Guilded.Base.Content;
+using Guilded.Base.Embeds;
 using TarkovRatBot.Core;
 using TarkovRatBot.Core.Extensions;
 using TarkovRatBot.Core.TarkovData;
@@ -8,19 +10,22 @@ namespace TarkovRatBot.Guilded.Extensions;
 
 public static class ItemExtensions
 {
-    public static Embed[] BuildMessageContent(this Item item)
+    public static MessageContent BuildMessageContent(this Item item)
     {
-        Embed[] embeds = new Embed[2];
-
-        var embed = new Embed    
+        var messageContent = new MessageContent
         {
-            Title = $"{item.Name} ({item.ShortName})",
-            Url =  new Uri(item.WikiLink),
-            Thumbnail = new EmbedMedia(item.ImageLink),
-            Footer = new EmbedFooter("Last Updated"),
-            Timestamp = item.Updated,
-            Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
-            Fields = new List<EmbedField>()
+                Embeds = new Collection<Embed>()
+        };
+
+        var embed = new Embed
+        {
+                Title = $"{item.Name} ({item.ShortName})",
+                Url = new Uri(item.WikiLink),
+                Thumbnail = new EmbedMedia(item.ImageLink),
+                Footer = new EmbedFooter("Last Updated"),
+                Timestamp = item.Updated,
+                Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
+                Fields = new List<EmbedField>()
         };
 
         embed.AddField(new EmbedField("Base Price", (item.BasePrice ?? 0).ToString(), true));
@@ -28,32 +33,33 @@ public static class ItemExtensions
         ItemPrice buyFor = item.BuyFor.Where(s => s.Price is > 0).MinBy(s => s.Price);
         if (buyFor != null)
         {
-            var loyaltiRequirement = "";
+            var loyaltyRequirement = "";
             if (buyFor.Requirements is { Length: > 0 })
             {
-                PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == ERequirementType.LoyaltyLevel);
+                PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == RequirementType.LoyaltyLevel);
                 if (requirement != null)
-                    loyaltiRequirement = $"(LL {requirement.Value ?? 0})";
+                    loyaltyRequirement = $"(LL {requirement.Value ?? 0})";
             }
 
-            embed.AddField(new EmbedField($"Buy From {buyFor.ItemSourceName.FirstCharToUpperCase()} {loyaltiRequirement}",
-                $"{buyFor.Price} {buyFor.Currency}", true));
+            embed.AddField(new EmbedField($"Buy From {buyFor.ItemSourceName.FirstCharToUpperCase()} {loyaltyRequirement}",
+                    $"{buyFor.Price} {buyFor.Currency}", true));
         }
-        
+
         if (sellFor != null)
         {
             embed.AddField(new EmbedField($"Sell To {sellFor.ItemSourceName.FirstCharToUpperCase()}",
-                $"{sellFor.Price} {sellFor.Currency}", true));
+                    $"{sellFor.Price} {sellFor.Currency}", true));
         }
 
-        embeds[0] = embed;
+        messageContent.Embeds.Add(embed);
 
-        if (item.ItemTypes.Contains(EItemType.Ammo) && TarkovCore.AmmoCache.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
+        if (item.ItemTypes.Contains(ItemType.Ammo) && TarkovCore.AmmoCache.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
         {
-            embeds[1] = ammoInfo.BuildAmmoEmbed();
-            embed.Color = embeds[1].Color;
+            Embed ammoEmbed = ammoInfo.BuildAmmoEmbed();
+            messageContent.Embeds.Add(ammoEmbed);
+            embed.Color = ammoEmbed.Color;
         }
-        
-        return embeds;
+
+        return messageContent;
     }
 }

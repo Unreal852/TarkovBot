@@ -29,7 +29,7 @@ public static class ItemExtensions
             var loyaltiRequirement = "";
             if (buyFor.Requirements is { Length: > 0 })
             {
-                PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == ERequirementType.LoyaltyLevel);
+                PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == RequirementType.LoyaltyLevel);
                 if (requirement != null)
                     loyaltiRequirement = $"(LL {requirement.Value ?? 0})";
             }
@@ -48,7 +48,7 @@ public static class ItemExtensions
                     Value = $"{sellFor.Price} {sellFor.Currency}", IsInline = true
             });
 
-        if (item.ItemTypes.Contains(EItemType.Ammo) && TarkovCore.AmmoCache.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
+        if (item.ItemTypes.Contains(ItemType.Ammo) && TarkovCore.AmmoCache.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
         {
             embedBuilder.Color = ammoInfo.GetPenetrationClassColor();
             componentBuilder = new ComponentBuilder().WithButton("Ammo Infos", $"{Consts.ButtonAmmoMoreInfosId}@{item.Id}");

@@ -2,7 +2,7 @@
 
 namespace TarkovRatBot.Core.TarkovData;
 
-public enum EItemSourceName
+public enum ItemSourceName
 {
     [JsonPropertyName("prapor")]      Prapor,
     [JsonPropertyName("therapist")]   Therapist,

@@ -34,7 +34,7 @@ public class Program
 
         await Initialize();
 
-        await DiscordBot.Initialize(tokens.DiscordToken);
+        //await DiscordBot.Initialize(tokens.DiscordToken);
         await GuildedBot.Initialize(tokens.GuildedToken);
 
         HandleInput();
