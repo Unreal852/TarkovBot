@@ -82,23 +82,23 @@ public class DiscordBot
 
     private async Task OnSelectMenuExecuted(SocketMessageComponent arg)
     {
-        switch (arg.Data.CustomId)
-        {
-            case Consts.SelectMenuItemChoiceId:
-            {
-                Item[] result = await ItemsByIdsQuery.ExecuteAs<Item[]>(arg.Data.Values.FirstOrDefault());
-                if (result is { Length: 0 })
-                    return;
-                (Embed embed, MessageComponent component) = result[0].BuildItemEmbed();
-                await arg.DeferAsync();
-                await arg.ModifyOriginalResponseAsync(properties =>
-                {
-                    properties.Embed = embed;
-                    properties.Components = component;
-                });
-                break;
-            }
-        }
+        // switch (arg.Data.CustomId)
+        // {
+        //     case Consts.SelectMenuItemChoiceId:
+        //     {
+        //         Item[] result = await ItemsByIdsQuery.ExecuteAs<Item[]>(arg.Data.Values.FirstOrDefault());
+        //         if (result is { Length: 0 })
+        //             return;
+        //         (Embed embed, MessageComponent component) = result[0].BuildItemEmbed();
+        //         await arg.DeferAsync();
+        //         await arg.ModifyOriginalResponseAsync(properties =>
+        //         {
+        //             properties.Embed = embed;
+        //             properties.Components = component;
+        //         });
+        //         break;
+        //     }
+        // }
     }
 
     private async Task OnButtonExecuted(SocketMessageComponent arg)
@@ -118,36 +118,36 @@ public class DiscordBot
 
     private async Task OnPriceCommandExecuted(SocketSlashCommand cmd)
     {
-        var itemName = cmd.Data.Options.First().Value.ToString();
-        if (string.IsNullOrWhiteSpace(itemName))
-        {
-            await cmd.RespondAsync("Missing item name.", ephemeral: true);
-            return;
-        }
-
-        Item[] result = await ItemsByNameQuery.ExecuteAs<Item[]>(itemName);
-        if (result is { Length: > 0 })
-        {
-            if (result.Length > 1)
-            {
-                var embedBuilder = new EmbedBuilder
-                {
-                        Title = "Your request is not precise enough, select an item from the list (First 20 items) below or refine your request."
-                };
-
-                var componentBuilder = new ComponentBuilder();
-                var rowBuilder = new ActionRowBuilder();
-                var selectMenuBuilder = new SelectMenuBuilder { CustomId = Consts.SelectMenuItemChoiceId };
-                for (var i = 0; i < (result.Length < 20 ? result.Length : 20); i++)
-                    selectMenuBuilder.AddOption(result[i].Name, result[i].Id);
-                rowBuilder.Components.Add(selectMenuBuilder.Build());
-                componentBuilder.AddRow(rowBuilder);
-                await cmd.RespondAsync(embed: embedBuilder.Build(), components: componentBuilder.Build());
-                return;
-            }
-
-            (Embed Embed, MessageComponent Component) message = result[0].BuildItemEmbed();
-            await cmd.RespondAsync(embed: message.Embed, components: message.Component);
-        }
+        // var itemName = cmd.Data.Options.First().Value.ToString();
+        // if (string.IsNullOrWhiteSpace(itemName))
+        // {
+        //     await cmd.RespondAsync("Missing item name.", ephemeral: true);
+        //     return;
+        // }
+        //
+        // Item[] result = await ItemsByNameQuery.ExecuteAs<Item[]>(itemName);
+        // if (result is { Length: > 0 })
+        // {
+        //     if (result.Length > 1)
+        //     {
+        //         var embedBuilder = new EmbedBuilder
+        //         {
+        //                 Title = "Your request is not precise enough, select an item from the list (First 20 items) below or refine your request."
+        //         };
+        //
+        //         var componentBuilder = new ComponentBuilder();
+        //         var rowBuilder = new ActionRowBuilder();
+        //         var selectMenuBuilder = new SelectMenuBuilder { CustomId = Consts.SelectMenuItemChoiceId };
+        //         for (var i = 0; i < (result.Length < 20 ? result.Length : 20); i++)
+        //             selectMenuBuilder.AddOption(result[i].Name, result[i].Id);
+        //         rowBuilder.Components.Add(selectMenuBuilder.Build());
+        //         componentBuilder.AddRow(rowBuilder);
+        //         await cmd.RespondAsync(embed: embedBuilder.Build(), components: componentBuilder.Build());
+        //         return;
+        //     }
+        //
+        //     (Embed Embed, MessageComponent Component) message = result[0].BuildItemEmbed();
+        //     await cmd.RespondAsync(embed: message.Embed, components: message.Component);
+        // }
     }
 }

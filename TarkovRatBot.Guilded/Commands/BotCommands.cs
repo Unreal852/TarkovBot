@@ -4,13 +4,14 @@ using Guilded.Base.Embeds;
 using Guilded.Commands;
 using TarkovRatBot.Core;
 using TarkovRatBot.Core.TarkovData;
+using TarkovRatBot.Core.TarkovData.Items;
 using TarkovRatBot.Guilded.Extensions;
 
 namespace TarkovRatBot.Guilded.Commands;
 
 public class BotCommands : CommandModule
 {
-    public BotCommands() : base("t?")
+    public BotCommands()
     {
     }
 
@@ -18,7 +19,7 @@ public class BotCommands : CommandModule
     public async Task SearchCommandAsync(CommandEvent commandEvent, [CommandParam] string[] query)
     {
         string queryStr = string.Join(' ', query);
-        Item[] result = (await TarkovCore.ItemsByNameQuery.ExecuteAs<Item[]>(queryStr)).Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
+        Item[] result = (await TarkovCore.ItemsQuery.ExecuteAs<Item[]>($"name: \"{queryStr}\"")).Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
         if (result is { Length: 0 })
         {
             await commandEvent.ReplyAsync($"No item found for '{queryStr}'", true);

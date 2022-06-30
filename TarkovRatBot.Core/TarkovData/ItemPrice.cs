@@ -6,8 +6,9 @@ namespace TarkovRatBot.Core.TarkovData;
 
 public class ItemPrice
 {
-    [JsonPropertyName("source")]       public string             ItemSourceName { get; set; }
-    [JsonPropertyName("currency")]     public string             Currency       { get; set; }
-    [JsonPropertyName("price")]        public int?               Price          { get; set; }
-    [JsonPropertyName("requirements")] public PriceRequirement[] Requirements   { get; set; }
+    public int?    Price        { get; set; }
+    public int?    PriceRUB     { get; set; }
+    public string? Currency     { get; set; }
+    public IdOnly? CurrencyItem { get; set; }
+    public Vendor  Vendor       { get; set; }
 }

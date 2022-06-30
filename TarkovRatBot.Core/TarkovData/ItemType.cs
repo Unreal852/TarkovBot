@@ -7,14 +7,13 @@ namespace TarkovRatBot.Core.TarkovData;
 
 public enum ItemType
 {
-    [JsonPropertyName("ammo")]       Ammo,
-    [JsonPropertyName("ammoBox")]    AmmoBox,
-    [JsonPropertyName("any")]        Any,
-    [JsonPropertyName("armor")]      Armor,
-    [JsonPropertyName("backpack")]   Backpack,
-    [JsonPropertyName("barter")]     Barter,
-    [JsonPropertyName("container")]  Container,
-    [JsonPropertyName("disabled")]   Disabled,
+    [JsonPropertyName("ammo")]      Ammo,
+    [JsonPropertyName("ammoBox")]   AmmoBox,
+    [JsonPropertyName("any")]       Any,
+    [JsonPropertyName("armor")]     Armor,
+    [JsonPropertyName("backpack")]  Backpack,
+    [JsonPropertyName("barter")]    Barter,
+    [JsonPropertyName("container")] Container,
     [JsonPropertyName("glasses")]    Glasses,
     [JsonPropertyName("grenade")]    Grenade,
     [JsonPropertyName("gun")]        Gun,

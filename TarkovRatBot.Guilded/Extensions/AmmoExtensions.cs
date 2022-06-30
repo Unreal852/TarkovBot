@@ -1,29 +1,32 @@
 ﻿using System.Drawing;
 using Guilded.Base.Embeds;
+using TarkovRatBot.Core.Extensions;
+using TarkovRatBot.Core.TarkovData;
 using TarkovRatBot.Core.TarkovData.Ammos;
+using TarkovRatBot.Core.TarkovData.Items;
 
 namespace TarkovRatBot.Guilded.Extensions;
 
 public static class AmmoExtensions
 {
-    public static Embed BuildAmmoEmbed(this Ammo ammoInfo)
+    public static Embed BuildAmmoEmbed(this Ammo ammoInfo, Item ammoItem)
     {
         var embed = new Embed
         {
-                Title = $"{ammoInfo.Item.Name} ({ammoInfo.Item.ShortName})",
-                Url = new Uri(ammoInfo.Item.WikiLink),
-                Thumbnail = new EmbedMedia(ammoInfo.Item.ImageLink),
+                Title = $"{ammoItem.Name} ({ammoItem.ShortName})",
+                Url = new Uri(ammoItem.WikiLink                   ?? ""),
+                Thumbnail = new EmbedMedia(ammoItem.GridImageLink ?? ""),
                 Footer = new EmbedFooter("Last Updated"),
-                Timestamp = ammoInfo.Item.Updated,
-                Author = new EmbedAuthor("Provided by tarkov.dev","https://tarkov.dev/"),
+                Timestamp = ammoItem.Updated,
+                Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
                 Fields = new List<EmbedField>(),
                 Color = ammoInfo.GetPenetrationClassColor()
         };
 
-        embed.AddField("Damages (Flesh)", ammoInfo.Damage      ?? 0, true);
-        embed.AddField("Damages (Armor)", ammoInfo.ArmorDamage ?? 0, true);
-        embed.AddField("Velocity ", $"{ammoInfo.InitialSpeed ?? 0} m/s", true);
-        embed.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
+        embed.AddField("Damages (Flesh)", ammoInfo.Damages, true);
+        embed.AddField("Damages (Armor)", ammoInfo.ArmorDamages, true);
+        embed.AddField("Velocity ", $"{ammoInfo.InitialSpeed} m/s", true);
+        embed.AddField("Penetration Power", ammoInfo.PenetrationPower, true);
         embed.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
         if (ammoInfo.LightBleedModifier is > 0)
             embed.AddField("Light Bleed Chances", (int?)(ammoInfo.LightBleedModifier * 100) ?? 0, true);

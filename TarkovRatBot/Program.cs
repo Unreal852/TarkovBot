@@ -1,12 +1,10 @@
-﻿using System.Text.Json;
-using TarkovRatBot;
-using TarkovRatBot.Discord;
+﻿using TarkovRatBot;
 using TarkovRatBot.Guilded;
 using static TarkovRatBot.Core.TarkovCore;
 
 public class Program
 {
-    private DiscordBot DiscordBot { get; } = new();
+    //private DiscordBot DiscordBot { get; } = new();
 
     private GuildedBot GuildedBot { get; } = new();
 
@@ -17,6 +15,7 @@ public class Program
 
     private async Task MainAsync()
     {
+#if RELEASE
         string filePath = Path.Combine(Environment.CurrentDirectory, Consts.TokensFile);
         if (!File.Exists(filePath))
         {
@@ -31,6 +30,9 @@ public class Program
             WriteLine("Failed to deserialize tokens.", ConsoleColor.Red);
             return;
         }
+#elif DEBUG
+        var tokens = new BotsTokens();
+#endif
 
         await Initialize();
 

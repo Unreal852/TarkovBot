@@ -1,0 +1,26 @@
+﻿{
+    ammo(lang: en)
+    {
+        ammoType,
+        caliber,
+        weight,
+        damage,
+        armorDamage,
+        penetrationPower,
+        penetrationChance,
+        fragmentationChance,
+        ricochetChance,
+        lightBleedModifier,
+        heavyBleedModifier,
+        initialSpeed,
+        recoil,
+        accuracy,
+        projectileCount,
+        tracer
+        tracerColor
+        stackMaxSize
+        item {
+            id
+        }
+    }
+}

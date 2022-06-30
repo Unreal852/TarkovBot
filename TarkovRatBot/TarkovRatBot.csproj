@@ -21,7 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TarkovRatBot.Discord\TarkovRatBot.Discord.csproj" />
         <ProjectReference Include="..\TarkovRatBot.Guilded\TarkovRatBot.Guilded.csproj" />
     </ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using TarkovRatBot.Core.Extensions;
+using TarkovRatBot.Core.TarkovData;
 using TarkovRatBot.Core.TarkovData.Ammos;
 
 namespace TarkovRatBot.Core.Caches;
@@ -8,7 +9,7 @@ public class AmmoCache : TarkovCache<string, Ammo>
     public override async Task<bool> UpdateCache()
     {
         TarkovCore.WriteLine("[CACHE] Caching ammos...", ConsoleColor.Yellow);
-        Ammo[] ammoInfos = await TarkovCore.AmmoQuery.ExecuteAs<Ammo[]>();
+        Ammo[]? ammoInfos = await TarkovCore.AmmoQuery.ExecuteAs<Ammo[]>("lang: en");
         if (ammoInfos == null || ammoInfos.Length == 0)
         {
             TarkovCore.WriteLine("[CACHE] Failed to cache ammos !", ConsoleColor.Red);

@@ -3,60 +3,54 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TarkovRatBot.Core.Extensions;
+using TarkovRatBot.Core.TarkovData;
 
 namespace TarkovRatBot.Core.GraphQL;
 
 public class GraphQlQuery
 {
+    public const            string     QueryArgsDelimiter = "${ARGS}";
+    private static readonly HttpClient HttpClient         = new();
+
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
             Converters = { new JsonStringEnumConverter() }
     };
 
-    public GraphQlQuery(string graphQlFileName)
+    public GraphQlQuery(string queryName, string query)
     {
-        HttpClient = new HttpClient();
-        if (!graphQlFileName.EndsWith(".graphql"))
-            graphQlFileName += ".graphql";
-        Query = Assembly.GetExecutingAssembly().ReadFileToEnd(graphQlFileName);
-        GraphQlQueryName = graphQlFileName[..graphQlFileName.IndexOf(".", StringComparison.Ordinal)].FirstCharToLowerCase();
-        if (string.IsNullOrWhiteSpace(Query))
-        {
-            IsValid = false;
-            TarkovCore.WriteLine($"Failed to load file : {graphQlFileName}", ConsoleColor.Red);
-        }
-        else
-        {
-            IsValid = true;
-        }
+        QueryName = queryName;
+        Query = query;
     }
 
-    private HttpClient HttpClient       { get; }
-    private string     Query            { get; }
-    private string     GraphQlQueryName { get; }
-    public  bool       IsValid          { get; }
+    private string Query     { get; }
+    private string QueryName { get; }
 
-    public async Task<string> Execute(string param = null)
+    public async Task<string> Execute(string args)
     {
-        if (!IsValid)
-            return string.Empty;
-        var data = new Dictionary<string, string>
-        {
-                { "query", string.IsNullOrWhiteSpace(param) ? Query : Query.Replace("@", param.Replace("\"", "")) }
-        };
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync(Consts.TarkovDevUrl, data);
+        var data = new Dictionary<string, string> { { "query", Query.Replace(QueryArgsDelimiter, args) } };
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync(Constants.TarkovDevUrl, data);
         string responseContent = await response.Content.ReadAsStringAsync();
         return responseContent;
     }
 
-    public async Task<T> ExecuteAs<T>(string param = null, string propertyName = null)
+    public async Task<string> Execute(params object[] args)
     {
-        string content = await Execute(param);
+        return await Execute(string.Join(',', args));
+    }
+
+    public async Task<T?> ExecuteAs<T>(string args)
+    {
+        string content = await Execute(args);
+        if (string.IsNullOrWhiteSpace(content))
+            return default;
         JsonDocument document = JsonDocument.Parse(content);
-        return string.IsNullOrWhiteSpace(content)
-                ? default
-                : document.RootElement.GetProperty("data").GetProperty(string.IsNullOrWhiteSpace(propertyName)
-                        ? GraphQlQueryName
-                        : propertyName).Deserialize<T>(JsonSerializerOptions);
+        JsonElement dataProperty = document.RootElement.GetProperty("data");
+        return dataProperty.GetProperty(QueryName).Deserialize<T>(JsonSerializerOptions);
+    }
+
+    public async Task<T?> ExecuteAs<T>(params object[] args)
+    {
+        return await ExecuteAs<T>(string.Join(',', args));
     }
 }

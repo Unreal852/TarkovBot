@@ -1,5 +1,8 @@
 ﻿using Discord;
+using TarkovRatBot.Core.Extensions;
+using TarkovRatBot.Core.TarkovData;
 using TarkovRatBot.Core.TarkovData.Ammos;
+using TarkovRatBot.Core.TarkovData.Items;
 
 namespace TarkovRatBot.Discord.Extensions;
 
@@ -7,22 +10,23 @@ public static class AmmoExtensions
 {
     public static Embed BuildAmmoEmbed(this Ammo ammoInfo)
     {
+        Item ammoItem = ammoInfo.Item.Get();
         var embedBuilder = new EmbedBuilder
         {
-                Title = $"{ammoInfo.Item.Name} ({ammoInfo.Item.ShortName})",
-                Url = ammoInfo.Item.WikiLink,
-                ThumbnailUrl = ammoInfo.Item.ImageLink,
+                Title = $"{ammoItem.Name} ({ammoItem.ShortName})",
+                Url = ammoItem.WikiLink,
+                ThumbnailUrl = ammoItem.ImageLink,
                 Footer = new EmbedFooterBuilder { Text = "Last Updated" },
-                Timestamp = ammoInfo.Item.Updated,
+                Timestamp = ammoItem.Updated,
                 Author = new EmbedAuthorBuilder { Name = "Provided by tarkov.dev", Url = "https://tarkov.dev/" },
                 Fields = new List<EmbedFieldBuilder>(),
                 Color = ammoInfo.GetPenetrationClassColor()
         };
 
-        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damage      ?? 0, true);
-        embedBuilder.AddField("Damages (Armor)", ammoInfo.ArmorDamage ?? 0, true);
-        embedBuilder.AddField("Velocity ", $"{ammoInfo.InitialSpeed ?? 0} m/s", true);
-        embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower             ?? 0, true);
+        embedBuilder.AddField("Damages (Flesh)", ammoInfo.Damages , true);
+        embedBuilder.AddField("Damages (Armor)", ammoInfo.ArmorDamages, true);
+        embedBuilder.AddField("Velocity ", $"{ammoInfo.InitialSpeed} m/s", true);
+        embedBuilder.AddField("Penetration Power", ammoInfo.PenetrationPower, true);
         embedBuilder.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
         if (ammoInfo.LightBleedModifier is > 0)
             embedBuilder.AddField("Light Bleed Chances", (int?)(ammoInfo.LightBleedModifier * 100) ?? 0, true);
