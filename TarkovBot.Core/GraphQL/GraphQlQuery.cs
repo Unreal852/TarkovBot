@@ -43,7 +43,17 @@ public class GraphQlQuery
             return default;
         JsonDocument document = JsonDocument.Parse(content);
         JsonElement dataProperty = document.RootElement.GetProperty("data");
-        return dataProperty.GetProperty(QueryName).Deserialize<T>(JsonSerializerOptions);
+        try
+        {
+            var data = dataProperty.GetProperty(QueryName).Deserialize<T>(JsonSerializerOptions);
+            return data;
+        }
+        catch (Exception e)
+        {
+            TarkovCore.WriteLine(e.Message + "", ConsoleColor.Red);
+            TarkovCore.WriteLine(e.StackTrace + "", ConsoleColor.Red);
+            throw;
+        }
     }
 
     public async Task<T?> ExecuteAs<T>(params object[] args)

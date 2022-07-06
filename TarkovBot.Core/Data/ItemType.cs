@@ -27,5 +27,5 @@ public enum ItemType
     [JsonPropertyName("provisions")] Provisions,
     [JsonPropertyName("rig")]        Rig,
     [JsonPropertyName("suppressor")] Suppressor,
-    [JsonPropertyName("wearable")]   Searable,
+    [JsonPropertyName("wearable")]   Wearable,
 }

@@ -48,7 +48,7 @@ public class BotCommands : CommandModule
 
             var builder = new StringBuilder();
             for (var i = 0; i < (items.Length <= 20 ? items.Length : 20); i++)
-                builder.AppendLine($"***{i}***. **{items[i].Name}**");
+                builder.AppendLine($"**{i}** . {items[i].Name}");
             embed.Description = builder.ToString();
             await commandEvent.ReplyAsync(true, embeds: embed);
             return;
