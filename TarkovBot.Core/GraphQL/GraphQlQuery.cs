@@ -26,10 +26,8 @@ public class GraphQlQuery
     public async Task<string> Execute(string args)
     {
         var data = new Dictionary<string, string> { { "query", Query.Replace(QueryArgsDelimiter, args) } };
-        Console.WriteLine(data["query"]);
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync(Constants.TarkovDevUrl, data);
         string responseContent = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContent);
         return responseContent;
     }
 
