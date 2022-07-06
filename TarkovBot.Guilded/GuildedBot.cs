@@ -27,7 +27,7 @@ public class GuildedBot
             return;
         }
 
-        Bot.AddCommands(new BotCommands(), "!t");
+        Bot.AddCommands(new BotCommands(), "!");
 
         await Bot.ConnectAsync(token);
     }

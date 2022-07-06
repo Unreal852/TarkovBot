@@ -16,7 +16,7 @@ public class Program
     private async Task MainAsync()
     {
 #if RELEASE
-        string filePath = Path.Combine(Environment.CurrentDirectory, Consts.TokensFile);
+        string filePath = Path.Combine(Environment.CurrentDirectory, Constants.TokensFile);
         if (!File.Exists(filePath))
         {
             WriteLine("Missing tokens file.", ConsoleColor.Red);

@@ -1,9 +1,7 @@
 ﻿using System.Drawing;
 using Guilded.Base.Embeds;
+using TarkovBot.Core.Data;
 using TarkovBot.Core.Extensions;
-using TarkovBot.Core.TarkovData;
-using TarkovBot.Core.TarkovData.Ammos;
-using TarkovBot.Core.TarkovData.Items;
 
 namespace TarkovBot.Guilded.Extensions;
 
@@ -20,11 +18,10 @@ public static class AmmoExtensions
                 Timestamp = ammoItem.Updated,
                 Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
                 Fields = new List<EmbedField>(),
-                Color = ammoInfo.GetPenetrationClassColor()
         };
 
-        embed.AddField("Damages (Flesh)", ammoInfo.Damages, true);
-        embed.AddField("Damages (Armor)", ammoInfo.ArmorDamages, true);
+        embed.AddField("Damages (Flesh)", ammoInfo.Damage, true);
+        embed.AddField("Damages (Armor)", ammoInfo.ArmorDamage, true);
         embed.AddField("Velocity ", $"{ammoInfo.InitialSpeed} m/s", true);
         embed.AddField("Penetration Power", ammoInfo.PenetrationPower, true);
         embed.AddField("Frag Chances", (int?)(ammoInfo.FragmentationChance * 100) ?? 0, true);
@@ -33,15 +30,17 @@ public static class AmmoExtensions
         if (ammoInfo.HeavyBleedModifier is > 0)
             embed.AddField("Heavy Bleed Chances", (int?)(ammoInfo.HeavyBleedModifier * 100) ?? 0, true);
 
+        (int Real, int Effective) ammoArmor = ammoInfo.GetArmorClass();
         embed.AddField("Armor Class Real (Effective)",
-                $"{ammoInfo.RealArmorClassPen} {(ammoInfo.RealArmorClassPen != ammoInfo.EffectiveArmorClassPen ? $"({ammoInfo.EffectiveArmorClassPen})" : string.Empty)}",
+                $"{ammoArmor.Real} {(ammoArmor.Real != ammoArmor.Effective ? $"({ammoArmor.Effective})" : string.Empty)}",
                 true);
+        embed.Color = GetPenetrationClassColor(ammoArmor.Effective);
         return embed;
     }
 
-    public static Color GetPenetrationClassColor(this Ammo ammo)
+    public static Color GetPenetrationClassColor(int effectiveLevel)
     {
-        return ammo.EffectiveArmorClassPen switch
+        return effectiveLevel switch
         {
                 >= 6 => Color.Red,
                 >= 5 => Color.Orange,

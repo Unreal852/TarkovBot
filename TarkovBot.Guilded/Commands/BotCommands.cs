@@ -3,9 +3,9 @@ using Guilded.Base.Content;
 using Guilded.Base.Embeds;
 using Guilded.Commands;
 using TarkovBot.Core;
-using TarkovBot.Core.TarkovData;
-using TarkovBot.Core.TarkovData.Items;
+using TarkovBot.Core.Data;
 using TarkovBot.Guilded.Extensions;
+using Task = System.Threading.Tasks.Task;
 
 namespace TarkovBot.Guilded.Commands;
 
@@ -15,18 +15,25 @@ public class BotCommands : CommandModule
     {
     }
 
-    [Command("search", Aliases = new[] { "s" })]
-    public async Task SearchCommandAsync(CommandEvent commandEvent, [CommandParam] string[] query)
+    [Command("item", Aliases = new[] { "i" })]
+    public async Task ItemCommandAsync(CommandEvent commandEvent, [CommandParam] string[] query)
     {
         string queryStr = string.Join(' ', query);
-        Item[] result = (await TarkovCore.ItemsQuery.ExecuteAs<Item[]>($"name: \"{queryStr}\"")).Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
-        if (result is { Length: 0 })
+        Console.WriteLine(queryStr);
+        Item[] items = await TarkovCore.ItemsProvider.QueryByName(queryStr, LanguageCode.en);
+        Console.WriteLine(items);
+        //(await TarkovCore.ItemsQuery.ExecuteAs<Item[]>($"name: \"{queryStr}\"")).Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
+        if (items is { Length: 0 })
         {
             await commandEvent.ReplyAsync($"No item found for '{queryStr}'", true);
             return;
         }
 
-        if (result.Length > 1)
+        Console.WriteLine(1);
+
+        items = items.Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
+
+        if (items.Length > 1)
         {
             var embed = new Embed
             {
@@ -35,14 +42,14 @@ public class BotCommands : CommandModule
             };
 
             var builder = new StringBuilder();
-            for (var i = 0; i < (result.Length <= 20 ? result.Length : 20); i++)
-                builder.AppendLine($"- **{result[i].Name}**");
+            for (var i = 0; i < (items.Length <= 20 ? items.Length : 20); i++)
+                builder.AppendLine($"- **{items[i].Name}**");
             embed.Description = builder.ToString();
             await commandEvent.ReplyAsync(true, embeds: embed);
             return;
         }
 
-        MessageContent messageContent = result[0].BuildMessageContent();
+        MessageContent messageContent = items[0].BuildMessageContent();
         //messageContent.ReplyMessageIds = new Collection<Guid> { msg.Message.Id };
         if (messageContent.Embeds is { Count: >= 1 })
         {

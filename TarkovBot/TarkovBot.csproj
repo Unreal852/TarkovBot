@@ -10,8 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="GraphQL\ItemsByName.graphql" />
+        <None Remove="GraphQL\ItemsByName.graphql"/>
         <None Update="TarkovRatBotTokens.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Tokens.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

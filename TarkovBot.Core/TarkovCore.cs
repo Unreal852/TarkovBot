@@ -1,27 +1,20 @@
-﻿using TarkovBot.Core.Caches;
-using TarkovBot.Core.GraphQL;
-using TarkovBot.Core.TarkovData;
-using TarkovBot.Core.TarkovData.Ammos;
-using TarkovBot.Core.TarkovData.Crafts;
-using TarkovBot.Core.TarkovData.Items;
+﻿using TarkovBot.Core.Providers;
 
 namespace TarkovBot.Core;
 
 public static class TarkovCore
 {
-    public static GraphQlQuery         AmmoQuery            { get; } = GraphQlQueryBuilder.BuildQuery<Ammo>()!;
-    public static GraphQlQuery         CraftsQuery          { get; } = GraphQlQueryBuilder.BuildQuery<Craft>()!;
-    public static GraphQlQuery         ItemsQuery           { get; } = GraphQlQueryBuilder.BuildQuery<Item>()!;
-    public static GraphQlQuery         HideoutStationQuery  { get; } = GraphQlQueryBuilder.BuildQuery<HideoutStation>()!;
-    public static AmmoCache            AmmoCache            { get; } = new();
-    public static CraftsCache          CraftsCache          { get; } = new();
-    public static HideoutStationsCache HideoutStationsCache { get; } = new();
+    public static AmmoProvider AmmoProvider { get; } = new();
+
+    public static ItemsProvider ItemsProvider { get; } = new();
+    //public static CraftsProvider          CraftsProvider          { get; } = new();
+    //public static HideoutStationsProvider HideoutStationsProvider { get; } = new();
 
     public static async Task Initialize()
     {
-        await AmmoCache.UpdateCache();
-        await CraftsCache.UpdateCache();
-        await HideoutStationsCache.UpdateCache();
+        await AmmoProvider.UpdateCache();
+        // await CraftsProvider.UpdateCache();
+        // await HideoutStationsProvider.UpdateCache();
     }
 
     public static void WriteLine(string message, ConsoleColor color = ConsoleColor.White)

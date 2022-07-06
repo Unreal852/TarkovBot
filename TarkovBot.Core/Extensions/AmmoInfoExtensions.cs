@@ -1,4 +1,4 @@
-﻿using TarkovBot.Core.TarkovData.Ammos;
+﻿using TarkovBot.Core.Data;
 
 namespace TarkovBot.Core.Extensions;
 

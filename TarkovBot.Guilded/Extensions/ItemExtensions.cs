@@ -2,10 +2,8 @@
 using Guilded.Base.Content;
 using Guilded.Base.Embeds;
 using TarkovBot.Core;
+using TarkovBot.Core.Data;
 using TarkovBot.Core.Extensions;
-using TarkovBot.Core.TarkovData;
-using TarkovBot.Core.TarkovData.Ammos;
-using TarkovBot.Core.TarkovData.Items;
 
 namespace TarkovBot.Guilded.Extensions;
 
@@ -55,7 +53,7 @@ public static class ItemExtensions
 
         messageContent.Embeds.Add(embed);
 
-        if (item.Types.Contains(ItemType.Ammo) && TarkovCore.AmmoCache.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
+        if (item.Types.Contains(ItemType.Ammo) && TarkovCore.AmmoProvider.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
         {
             Embed ammoEmbed = ammoInfo.BuildAmmoEmbed(item);
             messageContent.Embeds.Add(ammoEmbed);

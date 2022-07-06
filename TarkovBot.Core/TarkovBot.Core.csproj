@@ -10,8 +10,4 @@
         <None Remove="Resources\ItemsByIDs.graphql" />
         <None Remove="Resources\ItemsByName.graphql" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="TarkovData\Quests" />
-    </ItemGroup>
 </Project>

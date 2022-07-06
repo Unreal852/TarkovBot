@@ -21,9 +21,8 @@ public static class GraphQlQueryBuilder
         var graphQlAttribute = type.GetCustomAttribute<GraphQlAttribute>();
         if (graphQlAttribute == null)
             return null;
-        var builder = new StringBuilder("{");
-        builder.Append(graphQlAttribute.Name);
-        builder.Append("(${ARGS})");
+        var builder = new StringBuilder("{").AppendLine();
+        builder.Append(graphQlAttribute.Name).Append("(${ARGS})").AppendLine();
 
         BuildObject(type, builder);
         builder.Append('}');
@@ -34,7 +33,7 @@ public static class GraphQlQueryBuilder
 
     private static void BuildObject(Type type, StringBuilder builder)
     {
-        builder.Append('{');
+        builder.Append('{').AppendLine();
         foreach (PropertyInfo property in GetProperties(type))
         {
             if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
@@ -43,11 +42,16 @@ public static class GraphQlQueryBuilder
             if (jsonName == null)
                 continue;
             if (IsPrimitive(property.PropertyType))
-                builder.Append(jsonName.Name).Append(',');
+                builder.Append(jsonName.Name).Append(',').AppendLine();
             else if (property.PropertyType.IsArray)
             {
-                builder.Append(jsonName.Name);
-                BuildObject(property.PropertyType.GetElementType()!, builder);
+                if (property.PropertyType.GetElementType()!.IsEnum)
+                    builder.Append(jsonName.Name).Append(',').AppendLine();
+                else
+                {
+                    builder.Append(jsonName.Name);
+                    BuildObject(property.PropertyType.GetElementType()!, builder);
+                }
             }
             else
             {
