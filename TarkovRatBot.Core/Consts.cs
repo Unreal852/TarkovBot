@@ -1,6 +1,0 @@
-﻿namespace TarkovRatBot.Core;
-
-internal static class Consts
-{
-    public const string TarkovDevUrl = "https://api.tarkov.dev/graphql";
-}

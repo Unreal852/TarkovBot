@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Discord.Net" Version="3.7.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TarkovRatBot.Core\TarkovRatBot.Core.csproj" />
+    </ItemGroup>
+
+</Project>
