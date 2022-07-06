@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TarkovBot.Core\TarkovBot.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Guilded" Version="0.8.6" />
+        <PackageReference Include="Guilded.Commands" Version="0.8.6" />
+    </ItemGroup>
+
+</Project>

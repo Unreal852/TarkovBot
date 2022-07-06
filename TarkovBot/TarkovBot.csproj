@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>10</LangVersion>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="GraphQL\ItemsByName.graphql" />
+        <None Update="TarkovRatBotTokens.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\Ammo.graphql" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TarkovBot.Guilded\TarkovBot.Guilded.csproj" />
+    </ItemGroup>
+
+</Project>

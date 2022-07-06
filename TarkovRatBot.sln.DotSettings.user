@@ -5,7 +5,8 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\doria\.nuget\packages\guilded.commands\0.8.0\lib\net6.0\Guilded.Commands.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=2d72f4c3_002Dd766_002D482d_002Db6a3_002Db53ce62b3234_0023TarkovRatBot_002EDiscord/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=2d72f4c3_002Dd766_002D482d_002Db6a3_002Db53ce62b3234_0023TarkovBot_002EDiscord/@EntryIndexedValue">True</s:Boolean>
+	
 	
 	
 	
