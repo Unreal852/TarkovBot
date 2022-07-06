@@ -19,17 +19,13 @@ public class BotCommands : CommandModule
     public async Task ItemCommandAsync(CommandEvent commandEvent, [CommandParam] string[] query)
     {
         string queryStr = string.Join(' ', query);
-        Console.WriteLine(queryStr);
         Item[] items = await TarkovCore.ItemsProvider.QueryByName(queryStr, LanguageCode.en);
-        Console.WriteLine(items);
         //(await TarkovCore.ItemsQuery.ExecuteAs<Item[]>($"name: \"{queryStr}\"")).Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
         if (items is { Length: 0 })
         {
             await commandEvent.ReplyAsync($"No item found for '{queryStr}'", true);
             return;
         }
-
-        Console.WriteLine(1);
 
         items = items.Where(i => !string.IsNullOrWhiteSpace(i.WikiLink)).ToArray();
 
