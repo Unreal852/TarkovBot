@@ -18,7 +18,7 @@ public class ItemsProvider : DataProvider<string, Item>
     {
         if (Cache.TryGetValue(id, out Item? item))
             return item;
-        Item[]? items = await Query.ExecuteAs<Item[]>($"lang: {lang.ToString()}, ids: [\"{id}\"]");
+        Item[]? items = await Query.ExecuteAs<Item[]>($"lang: {lang.ToString()}, ids: [\"{id}\"]").ConfigureAwait(false);
         if (items is not { Length: > 0 })
             return default;
         Cache.TryAdd(id, items[0]);

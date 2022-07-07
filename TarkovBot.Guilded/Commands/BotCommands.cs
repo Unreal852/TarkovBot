@@ -6,6 +6,7 @@ using Guilded.Commands;
 using TarkovBot.Core;
 using TarkovBot.Core.Data;
 using TarkovBot.Guilded.Extensions;
+using TarkovBot.Guilded.Messages.Implementations;
 using Task = System.Threading.Tasks.Task;
 
 namespace TarkovBot.Guilded.Commands;
@@ -13,9 +14,12 @@ namespace TarkovBot.Guilded.Commands;
 [SuppressMessage("Performance", "CA1806:Ne pas ignorer les résultats des méthodes")]
 public class BotCommands : CommandModule
 {
-    public BotCommands()
+    public BotCommands(GuildedBot bot)
     {
+        Bot = bot;
     }
+
+    public GuildedBot Bot { get; }
 
     [Command("item", Aliases = new[] { "i" })]
     public async Task ItemCommandAsync(CommandEvent commandEvent, [CommandParam] params string[] query)
@@ -42,15 +46,21 @@ public class BotCommands : CommandModule
         {
             var embed = new Embed
             {
-                    Title = "Your request is not precise enough, please refine your request.",
-                    Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/")
+                    Title = "Your request is not precise enough !",
+                    Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
+                    Footer = new EmbedFooter("Expire in 5 minutes.")
             };
 
             var builder = new StringBuilder();
-            for (var i = 0; i < (items.Length <= 20 ? items.Length : 20); i++)
+            builder.AppendLine("You can select one of the belows items by reacting to this message.").AppendLine();
+            int count = items.Length <= 11 ? items.Length : 11;
+            for (var i = 0; i < count; i++)
                 builder.AppendLine($"**{i}** . {items[i].Name}");
             embed.Description = builder.ToString();
-            await commandEvent.ReplyAsync(true, embeds: embed);
+            Message msg = await commandEvent.ReplyAsync(true, embeds: embed);
+            Bot.MessagesManager.AddMessage(msg.Id, new ItemsMessageSelector(commandEvent.Message, msg, items));
+            for (var i = 0; i < count; i++)
+                await msg.AddReactionAsync(Constants.EmotesIds[i]);
             return;
         }
 

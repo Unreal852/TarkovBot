@@ -33,12 +33,12 @@ public class GraphQlQuery
 
     public async Task<string> Execute(params object[] args)
     {
-        return await Execute(string.Join(',', args));
+        return await Execute(string.Join(',', args)).ConfigureAwait(false);
     }
 
     public async Task<T?> ExecuteAs<T>(string args)
     {
-        string content = await Execute(args);
+        string content = await Execute(args).ConfigureAwait(false);
         if (string.IsNullOrWhiteSpace(content))
             return default;
         JsonDocument document = JsonDocument.Parse(content);
@@ -50,7 +50,7 @@ public class GraphQlQuery
         }
         catch (Exception e)
         {
-            TarkovCore.WriteLine(e.Message + "", ConsoleColor.Red);
+            TarkovCore.WriteLine(e.Message    + "", ConsoleColor.Red);
             TarkovCore.WriteLine(e.StackTrace + "", ConsoleColor.Red);
             throw;
         }
