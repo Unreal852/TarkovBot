@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using TarkovBot.Core;
 
 namespace TarkovBot.Guilded.Messages;
 
@@ -36,10 +35,7 @@ public class MessagesManager
             {
                 if ((now - message.Value.Message.CreatedAt).TotalMinutes >= 5)
                 {
-                    if (Messages.TryRemove(message.Key, out _))
-                    {
-                        TarkovCore.WriteLine("REMOVED - " + message.Value.Message.Embeds[0].Title);
-                    }
+                    Messages.TryRemove(message.Key, out _);
                 }
             }
         }
