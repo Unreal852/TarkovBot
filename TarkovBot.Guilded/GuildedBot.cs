@@ -41,7 +41,11 @@ public class GuildedBot
             return;
         }
 
+#if RELEASE
         Bot.AddCommands(new BotCommands(this), "!");
+#elif DEBUG
+        Bot.AddCommands(new BotCommands(this), "?");
+#endif
         Bot.ReactionAdded.Subscribe(OnMessageReactionAdded);
 
         await Bot.ConnectAsync(token);

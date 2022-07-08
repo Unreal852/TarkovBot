@@ -3,7 +3,6 @@ using Guilded.Base.Content;
 using Guilded.Base.Embeds;
 using TarkovBot.Core;
 using TarkovBot.Core.Data;
-using TarkovBot.Core.Extensions;
 
 namespace TarkovBot.Guilded.Extensions;
 
@@ -27,29 +26,16 @@ public static class ItemExtensions
                 Fields = new List<EmbedField>()
         };
 
-        embed.AddField(new EmbedField("Base Price", item.BasePrice.ToString(), true));
-        ItemPrice sellFor = item.SellFor.Where(s => s.Price is > 0).MaxBy(s => s.Price);
-        ItemPrice buyFor = item.BuyFor.Where(s => s.Price is > 0).MinBy(s => s.Price);
-
-        if (buyFor != null)
-        {
-            // var loyaltyRequirement = "";
-            // if (buyFor.Requirements is { Length: > 0 })
-            // {
-            //     PriceRequirement requirement = buyFor.Requirements.FirstOrDefault(r => r.RequirementType == RequirementType.LoyaltyLevel);
-            //     if (requirement != null)
-            //         loyaltyRequirement = $"(LL {requirement.Value ?? 0})";
-            // }
-
-            embed.AddField(new EmbedField($"Buy From {buyFor.Vendor.Name.FirstCharToUpperCase()}",
-                    $"{buyFor.Price} {buyFor.Currency}", true));
-        }
+        embed.AddField("Price", $"{item.BasePrice}\n*(base price)*", true);
+        embed.AddField("Price Per Slot", $"{item.BasePrice / (item.Width * item.Height)}\n*({item.Width * item.Height} slots)*", true);
+        ItemPrice sellFor = item.GetBestSellingTrader();
+        ItemPrice buyFor = item.GetBestBuyingTrader();
 
         if (sellFor != null)
-        {
-            embed.AddField(new EmbedField($"Sell To {sellFor.Vendor.Name.FirstCharToUpperCase()}",
-                    $"{sellFor.Price} {sellFor.Currency}", true));
-        }
+            embed.AddField($"Sell to {sellFor.Vendor.Name}", $"{sellFor.Price}{sellFor.GetCurrencyChar()}", true);
+
+        if (buyFor != null)
+            embed.AddField($"Buy From {buyFor.Vendor.Name}", $"{buyFor.Price}{buyFor.GetCurrencyChar()}", true);
 
         messageContent.Embeds.Add(embed);
 
@@ -61,5 +47,15 @@ public static class ItemExtensions
         }
 
         return messageContent;
+    }
+
+    public static ItemPrice GetBestSellingTrader(this Item item)
+    {
+        return item.SellFor?.Where(s => s.Price is > 0).MaxBy(s => s.Price);
+    }
+
+    public static ItemPrice GetBestBuyingTrader(this Item item)
+    {
+        return item.BuyFor?.Where(s => s.Price is > 0).MaxBy(s => s.Price);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Guilded.Base.Embeds;
+﻿using Guilded.Base.Embeds;
 using TarkovBot.Core.Data;
 using TarkovBot.Core.Extensions;
 
@@ -34,20 +33,7 @@ public static class AmmoExtensions
         embed.AddField("Armor Class Real (Effective)",
                 $"{ammoArmor.Real} {(ammoArmor.Real != ammoArmor.Effective ? $"({ammoArmor.Effective})" : string.Empty)}",
                 true);
-        embed.Color = GetPenetrationClassColor(ammoArmor.Effective);
+        embed.Color = Core.Extensions.AmmoExtensions.GetPenetrationClassColor(ammoArmor.Effective);
         return embed;
-    }
-
-    public static Color GetPenetrationClassColor(int effectiveLevel)
-    {
-        return effectiveLevel switch
-        {
-                >= 6 => Color.Red,
-                >= 5 => Color.Orange,
-                >= 4 => Color.Purple,
-                >= 3 => Color.Blue,
-                >= 2 => Color.Green,
-                _    => Color.LightGray
-        };
     }
 }
