@@ -56,6 +56,6 @@ public static class ItemExtensions
 
     public static ItemPrice GetBestBuyingTrader(this Item item)
     {
-        return item.BuyFor?.Where(s => s.Price is > 0).MaxBy(s => s.Price);
+        return item.BuyFor?.Where(s => s.Price is > 0).MinBy(s => s.Price);
     }
 }
