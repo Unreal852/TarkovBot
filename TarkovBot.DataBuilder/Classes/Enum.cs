@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using TarkovBot.DataBuilder.Extensions;
 
 namespace TarkovBot.DataBuilder.Classes;
 
@@ -35,7 +36,7 @@ public class Enum : IClass
         foreach (string enumValue in _values)
         {
             builder.Append("[JsonPropertyName(\"").Append(enumValue).Append("\")] "); // JsonAttribute
-            builder.Append(enumValue).Append(',').AppendLine();
+            builder.Append(enumValue.FirstCharToUpperCase()).Append(',').AppendLine();
         }
 
         builder.Append('}'); // End of class

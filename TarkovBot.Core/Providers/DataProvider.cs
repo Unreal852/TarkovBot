@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using TarkovBot.Core.GraphQL;
 
-namespace TarkovBot.Core;
+namespace TarkovBot.Core.Providers;
 
 public abstract class DataProvider<TKey, T> : IEnumerable<T> where TKey : notnull
 {

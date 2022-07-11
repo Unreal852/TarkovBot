@@ -8,8 +8,8 @@ public class BotsTokens
     public BotsTokens()
     {
 #if DEBUG
-        DiscordToken = Environment.GetEnvironmentVariable(nameof(DiscordToken));
-        GuildedToken = Environment.GetEnvironmentVariable(nameof(GuildedToken));
+        DiscordToken = Environment.GetEnvironmentVariable(nameof(DiscordToken))!;
+        GuildedToken = Environment.GetEnvironmentVariable(nameof(GuildedToken))!;
 #endif
     }
 }

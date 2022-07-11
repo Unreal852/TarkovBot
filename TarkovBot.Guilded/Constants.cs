@@ -16,7 +16,7 @@ internal class Constants
     public const uint EmoteNineId  = 90002207;
     public const uint EmoteTenId   = 90002208;
 
-    public static readonly uint[] EmotesIds =
+    public static readonly uint[] SelectionEmotesIds =
     {
             EmoteZeroId, EmoteOneId, EmoteTwoId,
             EmoteThreeId, EmoteFourId, EmoteFiveId,

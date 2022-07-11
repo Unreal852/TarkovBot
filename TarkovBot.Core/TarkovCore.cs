@@ -1,4 +1,4 @@
-﻿using TarkovBot.Core.Providers;
+﻿using TarkovBot.Core.Providers.Implementations;
 
 namespace TarkovBot.Core;
 
@@ -13,6 +13,7 @@ public static class TarkovCore
     public static async Task Initialize()
     {
         await AmmoProvider.UpdateCache();
+        await ItemsProvider.UpdateCache();
         // await CraftsProvider.UpdateCache();
         // await HideoutStationsProvider.UpdateCache();
     }

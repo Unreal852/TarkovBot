@@ -20,10 +20,10 @@ public static class ItemExtensions
                 Title = $"{item.Name} ({item.ShortName})",
                 Url = new Uri(item.WikiLink                   ?? ""),
                 Thumbnail = new EmbedMedia(item.GridImageLink ?? ""),
-                Footer = new EmbedFooter("Last Updated"),
+                Footer = new EmbedFooter(item.Id),
                 Timestamp = item.Updated,
                 Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
-                Fields = new List<EmbedField>()
+                Fields = new List<EmbedField>(),
         };
 
         embed.AddField("Price", $"{item.BasePrice}\n*(base price)*", true);
@@ -51,6 +51,20 @@ public static class ItemExtensions
 
     public static ItemPrice GetBestSellingTrader(this Item item)
     {
+        TarkovCore.WriteLine("Sell---------------");
+
+        foreach (ItemPrice itemPrice in item.SellFor)
+        {
+            TarkovCore.WriteLine(itemPrice.Vendor.Name + ": " + itemPrice.PriceRUB);
+        }
+
+
+        TarkovCore.WriteLine("Buy---------------");
+        foreach (ItemPrice itemPrice in item.BuyFor)
+        {
+            TarkovCore.WriteLine(itemPrice.Vendor.Name + ": " + itemPrice.PriceRUB);
+        }
+
         return item.SellFor?.Where(s => s.Price is > 0).MaxBy(s => s.Price);
     }
 

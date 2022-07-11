@@ -59,26 +59,29 @@ public class GuildedBot
 
     private async void OnMessageReactionAdded(MessageReactionEvent e)
     {
-        if (e.CreatedBy == Me.Id || !Constants.EmotesIds.Contains(e.Emote.Id))
+        if (e.CreatedBy == Me.Id)
             return;
-        if (MessagesManager.TryTake(e.MessageId, out IMessageInfos messageInfos) && messageInfos is ItemsMessageSelector messageSelector)
+        if (Constants.SelectionEmotesIds.Contains(e.Emote.Id))
         {
-            int index = e.Emote.ToSelectorIndex();
-            if (index >= messageSelector.Items.Length)
+            if (MessagesManager.TryTake(e.MessageId, out IMessageInfos messageInfos) && messageInfos is ItemsMessageSelector messageSelector)
             {
-                WriteLine("Message reaction out of bounds.", ConsoleColor.Red);
-                return;
-            }
+                int index = e.Emote.ToSelectorIndex();
+                if (index >= messageSelector.Items.Length)
+                {
+                    WriteLine("Message reaction out of bounds.", ConsoleColor.Red);
+                    return;
+                }
 
-            Item item = messageSelector.Items[index];
-            MessageContent messageContent = item.BuildMessageContent();
-            if (messageContent.Embeds is { Count: >= 1 })
-            {
-                foreach (Embed embed in messageContent.Embeds)
-                    await messageSelector.CommandMessage.ReplyAsync(embeds: embed);
-            }
+                Item item = messageSelector.Items[index];
+                MessageContent messageContent = item.BuildMessageContent();
+                if (messageContent.Embeds is { Count: >= 1 })
+                {
+                    foreach (Embed embed in messageContent.Embeds)
+                        await messageSelector.CommandMessage.ReplyAsync(embeds: embed);
+                }
 
-            await messageSelector.Message.DeleteAsync();
+                await messageSelector.Message.DeleteAsync();
+            }
         }
     }
 }

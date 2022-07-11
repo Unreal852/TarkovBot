@@ -29,15 +29,7 @@ public static class AmmoExtensions
 
     public static Color GetPenetrationClassColor(this Ammo ammoInfo)
     {
-        return ammoInfo.GetArmorClass().Effective switch
-        {
-                >= 6 => Color.Red,
-                >= 5 => Color.Orange,
-                >= 4 => Color.Purple,
-                >= 3 => Color.Blue,
-                >= 2 => Color.Green,
-                _    => Color.LightGray
-        };
+        return GetPenetrationClassColor(ammoInfo.GetArmorClass().Effective);
     }
 
     public static Color GetPenetrationClassColor(int effective)

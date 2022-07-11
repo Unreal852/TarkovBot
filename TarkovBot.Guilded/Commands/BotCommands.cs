@@ -33,7 +33,8 @@ public class BotCommands : CommandModule
             languageCode = LanguageCode.en;
         }
 
-        Item[] items = await TarkovCore.ItemsProvider.QueryByName(queryStr, languageCode);
+        Item[] items = TarkovCore.ItemsProvider.Where(languageCode,
+                item => item.Name != null && item.Name.Contains(queryStr, StringComparison.CurrentCultureIgnoreCase)).ToArray();
         if (items is { Length: 0 })
         {
             await commandEvent.ReplyAsync($"No item found for '{queryStr}'", true);
@@ -60,7 +61,7 @@ public class BotCommands : CommandModule
             Message msg = await commandEvent.ReplyAsync(true, embeds: embed);
             Bot.MessagesManager.AddMessage(msg.Id, new ItemsMessageSelector(commandEvent.Message, msg, items));
             for (var i = 0; i < count; i++)
-                await msg.AddReactionAsync(Constants.EmotesIds[i]);
+                await msg.AddReactionAsync(Constants.SelectionEmotesIds[i]);
             return;
         }
 

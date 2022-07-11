@@ -1,7 +1,7 @@
 ﻿using TarkovBot.Core.Data;
 using TarkovBot.Core.GraphQL;
 
-namespace TarkovBot.Core.Providers;
+namespace TarkovBot.Core.Providers.Implementations;
 
 public class CraftsProvider : DataProvider<string, Craft>
 {
@@ -25,5 +25,10 @@ public class CraftsProvider : DataProvider<string, Craft>
 
         TarkovCore.WriteLine($"[CACHE] Successfully cached {Count} crafts !", ConsoleColor.Green);
         return true;
+    }
+
+    private Task<Item[]?> QueryAll(LanguageCode lang)
+    {
+        return Query.ExecuteAs<Item[]>($"lang: {lang}");
     }
 }

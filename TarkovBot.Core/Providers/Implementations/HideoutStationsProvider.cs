@@ -1,7 +1,7 @@
 ﻿using TarkovBot.Core.Data;
 using TarkovBot.Core.GraphQL;
 
-namespace TarkovBot.Core.Providers;
+namespace TarkovBot.Core.Providers.Implementations;
 
 public class HideoutStationsProvider : DataProvider<string, HideoutStation>
 {
