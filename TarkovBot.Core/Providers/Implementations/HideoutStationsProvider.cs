@@ -9,14 +9,14 @@ public class HideoutStationsProvider : DataProvider<string, HideoutStation>
     {
     }
 
-    public override async Task<bool> UpdateCache()
+    public override async Task<int> UpdateCache()
     {
         TarkovCore.WriteLine("[CACHE] Caching hideout stations...", ConsoleColor.Yellow);
         HideoutStation[]? hideouts = await Query.ExecuteAs<HideoutStation[]>("lang: en");
         if (hideouts == null || hideouts.Length == 0)
         {
             TarkovCore.WriteLine("[CACHE] Failed to cache hideout stations !", ConsoleColor.Red);
-            return false;
+            return 0;
         }
 
         Cache.Clear();
@@ -24,6 +24,6 @@ public class HideoutStationsProvider : DataProvider<string, HideoutStation>
             Cache.TryAdd(hideoutStation.Id, hideoutStation);
 
         TarkovCore.WriteLine($"[CACHE] Successfully cached {Count} hideout stations !", ConsoleColor.Green);
-        return true;
+        return Count;
     }
 }

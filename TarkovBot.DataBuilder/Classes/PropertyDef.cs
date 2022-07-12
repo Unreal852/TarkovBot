@@ -2,9 +2,9 @@
 
 namespace TarkovBot.DataBuilder.Classes;
 
-public class ClassProperty
+public class PropertyDef
 {
-    public ClassProperty(string type, string name, bool isNullable, bool isArray, bool isArrayContentNullable)
+    public PropertyDef(string type, string name, bool isNullable, bool isArray, bool isArrayContentNullable)
     {
         Type = AdaptType(type);
         Name = name.FirstCharToUpperCase();

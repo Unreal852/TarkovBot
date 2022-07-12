@@ -4,7 +4,7 @@ using TarkovBot.Core.GraphQL.Attributes;
 namespace TarkovBot.Core.Data;
 
 [GraphQl("items")]
-public class Item
+public class Item : IIdentifiable
 {
     [JsonPropertyName("id")]                   public string        Id                   { get; set; }
     [JsonPropertyName("name")]                 public string?       Name                 { get; set; }
@@ -38,11 +38,11 @@ public class Item
     [JsonPropertyName("weight")]               public float?        Weight               { get; set; }
     [JsonPropertyName("velocity")]             public float?        Velocity             { get; set; }
     [JsonPropertyName("loudness")]             public int?          Loudness             { get; set; }
+    [JsonPropertyName("craftsFor")]            public IdOnly[]      CraftsFor            { get; set; }
+    [JsonPropertyName("craftsUsing")]          public IdOnly[]      CraftsUsing          { get; set; }
 
     // [JsonPropertyName("usedInTasks")]           public Task[]           UsedInTasks           { get; set; }
     // [JsonPropertyName("receivedFromTasks")]     public Task[]           ReceivedFromTasks     { get; set; }
     // [JsonPropertyName("bartersFor")]            public Barter[]         BartersFor            { get; set; }
     // [JsonPropertyName("bartersUsing")]          public Barter[]         BartersUsing          { get; set; }
-    // [JsonPropertyName("craftsFor")]             public Craft[]          CraftsFor             { get; set; }
-    // [JsonPropertyName("craftsUsing")]           public Craft[]          CraftsUsing           { get; set; }
 }

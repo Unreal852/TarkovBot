@@ -1,17 +1,25 @@
 ﻿{
-    tasks(lang: fr)
+    items(lang: en, name: "car first aid")
     {
-        id,
         name,
-        objectives {
-            id,
-            type,
-            description,
-            maps {
-                name
-                description
+        craftsFor {
+            requiredItems {
+                item {
+                    name
+                }
             }
-            optional
+        }
+        craftsUsing {
+            requiredItems {
+                item {
+                    name
+                }
+            }
+            rewardItems {
+                item {
+                    name
+                }
+            }
         }
     }
 }

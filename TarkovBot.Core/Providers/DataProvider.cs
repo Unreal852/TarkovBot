@@ -4,19 +4,19 @@ using TarkovBot.Core.GraphQL;
 
 namespace TarkovBot.Core.Providers;
 
-public abstract class DataProvider<TKey, T> : IEnumerable<T> where TKey : notnull
+public abstract class DataProvider<TKey, TValue> : IEnumerable<TValue>
+        where TKey : notnull
 {
     protected DataProvider(GraphQlQuery query)
     {
         Query = query;
     }
 
-    public ConcurrentDictionary<TKey, T> Cache    { get; } = new();
-    public GraphQlQuery                  Query    { get; protected set; }
-    public bool                          IsCached => !Cache.IsEmpty;
-    public int                           Count    => Cache.Count;
+    public ConcurrentDictionary<TKey, TValue> Cache { get; } = new();
+    public GraphQlQuery                       Query { get; protected set; }
+    public int                                Count => Cache.Count;
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<TValue> GetEnumerator()
     {
         return Cache.Values.GetEnumerator();
     }
@@ -26,20 +26,25 @@ public abstract class DataProvider<TKey, T> : IEnumerable<T> where TKey : notnul
         return GetEnumerator();
     }
 
-    public abstract Task<bool> UpdateCache();
+    public abstract Task<int> UpdateCache();
 
-    public virtual IEnumerable<T> Where(Predicate<T> predicate)
+    public TValue? GetByKey(TKey key)
     {
-        foreach (KeyValuePair<TKey, T> pair in Cache)
+        return Cache.TryGetValue(key, out TValue? value) ? value : default;
+    }
+
+    public virtual IEnumerable<TValue> Where(Predicate<TValue> predicate)
+    {
+        foreach (KeyValuePair<TKey, TValue> pair in Cache)
         {
             if (predicate(pair.Value))
                 yield return pair.Value;
         }
     }
 
-    public virtual T? Single(Predicate<T> predicate)
+    public virtual TValue? Single(Predicate<TValue> predicate)
     {
-        foreach (KeyValuePair<TKey, T> pair in Cache)
+        foreach (KeyValuePair<TKey, TValue> pair in Cache)
         {
             if (predicate(pair.Value))
                 return pair.Value;

@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using Guilded.Base.Content;
 using Guilded.Base.Embeds;
-using TarkovBot.Core;
 using TarkovBot.Core.Data;
+using TarkovBot.Core.Extensions;
 
 namespace TarkovBot.Guilded.Extensions;
 
@@ -39,32 +39,14 @@ public static class ItemExtensions
 
         messageContent.Embeds.Add(embed);
 
-        if (item.Types.Contains(ItemType.Ammo) && TarkovCore.AmmoProvider.Cache.TryGetValue(item.Id, out Ammo ammoInfo))
-        {
-            Embed ammoEmbed = ammoInfo.BuildAmmoEmbed(item);
-            messageContent.Embeds.Add(ammoEmbed);
-            embed.Color = ammoEmbed.Color;
-        }
+        if (item.IsAmmo(out Ammo ammo))
+            embed.Color = ammo!.GetPenetrationClassColor();
 
         return messageContent;
     }
 
     public static ItemPrice GetBestSellingTrader(this Item item)
     {
-        TarkovCore.WriteLine("Sell---------------");
-
-        foreach (ItemPrice itemPrice in item.SellFor)
-        {
-            TarkovCore.WriteLine(itemPrice.Vendor.Name + ": " + itemPrice.PriceRUB);
-        }
-
-
-        TarkovCore.WriteLine("Buy---------------");
-        foreach (ItemPrice itemPrice in item.BuyFor)
-        {
-            TarkovCore.WriteLine(itemPrice.Vendor.Name + ": " + itemPrice.PriceRUB);
-        }
-
         return item.SellFor?.Where(s => s.Price is > 0).MaxBy(s => s.Price);
     }
 

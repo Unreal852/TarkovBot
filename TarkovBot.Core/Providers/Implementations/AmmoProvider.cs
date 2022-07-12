@@ -9,14 +9,14 @@ public class AmmoProvider : DataProvider<string, Ammo>
     {
     }
 
-    public override async Task<bool> UpdateCache()
+    public override async Task<int> UpdateCache()
     {
         TarkovCore.WriteLine("[CACHE] Caching ammos...", ConsoleColor.Yellow);
         Ammo[]? ammoInfos = await Query.ExecuteAs<Ammo[]>("lang: en");
         if (ammoInfos == null || ammoInfos.Length == 0)
         {
             TarkovCore.WriteLine("[CACHE] Failed to cache ammos !", ConsoleColor.Red);
-            return false;
+            return 0;
         }
 
         Cache.Clear();
@@ -26,6 +26,6 @@ public class AmmoProvider : DataProvider<string, Ammo>
         }
 
         TarkovCore.WriteLine($"[CACHE] Successfully cached {Count} ammos !", ConsoleColor.Green);
-        return true;
+        return Count;
     }
 }

@@ -4,18 +4,14 @@ namespace TarkovBot.Core;
 
 public static class TarkovCore
 {
-    public static AmmoProvider AmmoProvider { get; } = new();
-
-    public static ItemsProvider ItemsProvider { get; } = new();
-    //public static CraftsProvider          CraftsProvider          { get; } = new();
-    //public static HideoutStationsProvider HideoutStationsProvider { get; } = new();
+    private static Timer         Timer         { get; } = new(OnTimerTick, TimeSpan.FromHours(2.0));
+    public static  AmmoProvider  AmmoProvider  { get; } = new();
+    public static  ItemsProvider ItemsProvider { get; } = new();
 
     public static async Task Initialize()
     {
-        await AmmoProvider.UpdateCache();
-        await ItemsProvider.UpdateCache();
-        // await CraftsProvider.UpdateCache();
-        // await HideoutStationsProvider.UpdateCache();
+        await UpdateCaches();
+        Timer.Start();
     }
 
     public static void WriteLine(string message, ConsoleColor color = ConsoleColor.White)
@@ -23,5 +19,16 @@ public static class TarkovCore
         Console.ForegroundColor = color;
         Console.WriteLine($"[{DateTime.UtcNow:T}] {message}");
         Console.ResetColor();
+    }
+
+    private static async Task UpdateCaches()
+    {
+        await AmmoProvider.UpdateCache().ConfigureAwait(false);
+        await ItemsProvider.UpdateCache().ConfigureAwait(false);
+    }
+
+    private static Task OnTimerTick()
+    {
+        return UpdateCaches();
     }
 }

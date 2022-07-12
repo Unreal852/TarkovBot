@@ -1,4 +1,6 @@
-﻿using Guilded.Base.Embeds;
+﻿using System.Collections.ObjectModel;
+using Guilded.Base.Content;
+using Guilded.Base.Embeds;
 using TarkovBot.Core.Data;
 using TarkovBot.Core.Extensions;
 
@@ -35,5 +37,14 @@ public static class AmmoExtensions
                 true);
         embed.Color = Core.Extensions.AmmoExtensions.GetPenetrationClassColor(ammoArmor.Effective);
         return embed;
+    }
+
+    public static MessageContent BuildMessageContent(this Ammo ammoInfo, Item ammoItem)
+    {
+        var messageContent = new MessageContent
+        {
+                Embeds = new Collection<Embed>() { ammoInfo.BuildAmmoEmbed(ammoItem) }
+        };
+        return messageContent;
     }
 }

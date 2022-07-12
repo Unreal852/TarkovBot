@@ -5,7 +5,8 @@ namespace TarkovBot.DataBuilder.Classes;
 
 public class Enum : IClass
 {
-    private readonly List<string> _values = new();
+    private readonly List<string>   _values = new();
+    private readonly List<UsingDef> _usings = new();
 
     public Enum(string className, string nameSpace)
     {
@@ -13,10 +14,20 @@ public class Enum : IClass
         Namespace = nameSpace;
     }
 
-    public string ClassName { get; }
-    public string Namespace { get; }
+    public string                ClassName { get; }
+    public string                Namespace { get; }
+    public IEnumerable<UsingDef> UsingDefs => _usings;
 
-    public void AddRawValue(string line)
+    public void AddRawUsing(string line)
+    {
+        if (!line.StartsWith("using"))
+            line = $"using {line}";
+        if (!line.EndsWith(';'))
+            line += ';';
+        _usings.Add(new UsingDef(line));
+    }
+
+    public void AddRawProperty(string line)
     {
         if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("#"))
             return;

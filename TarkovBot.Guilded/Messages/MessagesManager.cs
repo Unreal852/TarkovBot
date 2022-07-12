@@ -1,42 +1,38 @@
 ﻿using System.Collections.Concurrent;
+using Timer = TarkovBot.Core.Timer;
 
 namespace TarkovBot.Guilded.Messages;
 
-public class MessagesManager
+public static class MessagesManager
 {
-    public MessagesManager(GuildedBot bot)
+    private static readonly Timer                                     Timer    = new(OnTimerTick, TimeSpan.FromMinutes(1));
+    private static readonly ConcurrentDictionary<Guid, IMessageInfos> Messages = new();
+
+    static MessagesManager()
     {
-        Bot = bot;
-        OnTimerTick();
+        Timer.Start();
     }
 
-    public  GuildedBot                                Bot           { get; }
-    private PeriodicTimer                             PeriodicTimer { get; } = new(TimeSpan.FromMinutes(1));
-    private ConcurrentDictionary<Guid, IMessageInfos> Messages      { get; } = new();
-
-    public void AddMessage(Guid id, IMessageInfos messageInfos)
+    public static void AddMessage(Guid id, IMessageInfos messageInfos)
     {
         if (Messages.ContainsKey(id))
             return;
         Messages.TryAdd(id, messageInfos);
     }
 
-    public bool TryTake(Guid id, out IMessageInfos messageInfos)
+    public static bool TryTake(Guid id, out IMessageInfos? messageInfos)
     {
         return Messages.TryRemove(id, out messageInfos);
     }
 
-    private async void OnTimerTick()
+    private static async Task OnTimerTick()
     {
-        while (await PeriodicTimer.WaitForNextTickAsync())
+        var now = DateTime.Now;
+        foreach (KeyValuePair<Guid, IMessageInfos> message in Messages)
         {
-            var now = DateTime.Now;
-            foreach (KeyValuePair<Guid, IMessageInfos> message in Messages)
+            if ((now - message.Value.Message.CreatedAt).TotalMinutes >= 5)
             {
-                if ((now - message.Value.Message.CreatedAt).TotalMinutes >= 5)
-                {
-                    Messages.TryRemove(message.Key, out _);
-                }
+                Messages.TryRemove(message.Key, out _);
             }
         }
     }

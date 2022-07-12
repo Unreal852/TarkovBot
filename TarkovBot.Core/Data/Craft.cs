@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace TarkovBot.Core.Data;
 
-public class Craft
+public class Craft : IIdentifiable
 {
     [JsonPropertyName("id")]            public string          Id            { get; set; }
     [JsonPropertyName("station")]       public HideoutStation  Station       { get; set; }

@@ -1,18 +1,12 @@
 ﻿// ReSharper disable IdentifierTypo
 
 using Guilded;
-using Guilded.Base.Content;
-using Guilded.Base.Embeds;
 using Guilded.Base.Events;
 using Guilded.Base.Users;
 using Guilded.Commands;
-using TarkovBot.Core.Data;
 using TarkovBot.Guilded.Commands;
-using TarkovBot.Guilded.Extensions;
-using TarkovBot.Guilded.Messages;
-using TarkovBot.Guilded.Messages.Implementations;
+using TarkovBot.Guilded.Reactions;
 using static TarkovBot.Core.TarkovCore;
-using Task = System.Threading.Tasks.Task;
 
 // ReSharper disable InvertIf
 
@@ -23,21 +17,18 @@ public class GuildedBot
     public GuildedBot()
     {
         Bot = new GuildedBotClient();
-        MessagesManager = new MessagesManager(this);
         Bot.Prepared.Subscribe(OnBotReady);
     }
 
-    public GuildedBotClient Bot             { get; }
-    public MessagesManager  MessagesManager { get; }
-
-    private Me Me { get; set; }
+    public  GuildedBotClient Bot { get; }
+    private Me?              Me  { get; set; }
 
     public async Task Initialize(string token)
     {
-        WriteLine("Initializing Guilded Bot...", ConsoleColor.Yellow);
+        WriteLine("Initializing Guilded BotClient...", ConsoleColor.Yellow);
         if (string.IsNullOrWhiteSpace(token))
         {
-            WriteLine("Failed to initialize guilded bot. Missing Token.", ConsoleColor.Red);
+            WriteLine("Failed to initialize guilded botClient. Missing Token.", ConsoleColor.Red);
             return;
         }
 
@@ -54,34 +45,13 @@ public class GuildedBot
     private void OnBotReady(Me me)
     {
         Me = me;
-        WriteLine("Guilded Bot Initialized !", ConsoleColor.Green);
+        WriteLine("Guilded BotClient Initialized !", ConsoleColor.Green);
     }
 
     private async void OnMessageReactionAdded(MessageReactionEvent e)
     {
         if (e.CreatedBy == Me.Id)
             return;
-        if (Constants.SelectionEmotesIds.Contains(e.Emote.Id))
-        {
-            if (MessagesManager.TryTake(e.MessageId, out IMessageInfos messageInfos) && messageInfos is ItemsMessageSelector messageSelector)
-            {
-                int index = e.Emote.ToSelectorIndex();
-                if (index >= messageSelector.Items.Length)
-                {
-                    WriteLine("Message reaction out of bounds.", ConsoleColor.Red);
-                    return;
-                }
-
-                Item item = messageSelector.Items[index];
-                MessageContent messageContent = item.BuildMessageContent();
-                if (messageContent.Embeds is { Count: >= 1 })
-                {
-                    foreach (Embed embed in messageContent.Embeds)
-                        await messageSelector.CommandMessage.ReplyAsync(embeds: embed);
-                }
-
-                await messageSelector.Message.DeleteAsync();
-            }
-        }
+        await ReactionsManager.HandleReaction(e.Emote.Id, Bot, e);
     }
 }

@@ -66,7 +66,7 @@ static void BuildData(DirectoryInfo outputDirectory, FileSystemInfo fileInfo)
             {
                 if (classLine.Contains("@deprecated") || i + 1 < lines.Length && lines[i + 1].Contains("@deprecated"))
                     continue;
-                @class.AddRawValue(classLine);
+                @class.AddRawProperty(classLine);
             }
 
             @class.Build(outputDirectory);
@@ -76,8 +76,13 @@ static void BuildData(DirectoryInfo outputDirectory, FileSystemInfo fileInfo)
         {
             WriteLine("Building class 'IdOnly'...", ConsoleColor.Yellow);
             var idOnlyClass = new Class("IdOnly", Namespace);
-            idOnlyClass.AddValue(new ClassProperty("string", "id", false, false, false));
+            idOnlyClass.AddProperty(new PropertyDef("string", "id", false, false, false));
             idOnlyClass.Build(outputDirectory);
+
+            var identifiableInterface = new Class("IdOnly", Namespace, true);
+            identifiableInterface.AddProperty(new PropertyDef("string", "id", false, false, false));
+            identifiableInterface.Build(outputDirectory);
+
             totalClasses++;
         }
 
