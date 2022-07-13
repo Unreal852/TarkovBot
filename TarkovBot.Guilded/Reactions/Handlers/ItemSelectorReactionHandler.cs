@@ -3,7 +3,6 @@ using Guilded.Base.Content;
 using Guilded.Base.Events;
 using TarkovBot.Core;
 using TarkovBot.Core.Data;
-using TarkovBot.Core.Extensions;
 using TarkovBot.Guilded.Extensions;
 using TarkovBot.Guilded.Messages;
 using TarkovBot.Guilded.Messages.Implementations;
@@ -28,8 +27,7 @@ public class ItemSelectorReactionHandler : IMessageReactionHandler
             MessageContent messageContent = item.BuildMessageContent();
             messageContent.ReplyMessageIds = messageSelector.Message.ReplyMessageIds;
             Message message = await bot.CreateMessageAsync(e.ChannelId, messageContent);
-            if (item.IsAmmo())
-                await message.AddReactionAsync(Constants.EmoteLargeRedSquare);
+            await message.AppendReactions(item);
 
             await messageSelector.Message.DeleteAsync();
         }

@@ -1,24 +1,15 @@
 ﻿{
-    items(lang: en, name: "car first aid")
+    items(lang: en, name: "rechargeable battery")
     {
+        id,
         name,
-        craftsFor {
-            requiredItems {
-                item {
-                    name
-                }
-            }
-        }
-        craftsUsing {
-            requiredItems {
-                item {
-                    name
-                }
-            }
-            rewardItems {
-                item {
-                    name
-                }
+        usedInTasks {
+            name
+            minPlayerLevel
+            objectives {
+                type
+                __typename
+                optional
             }
         }
     }

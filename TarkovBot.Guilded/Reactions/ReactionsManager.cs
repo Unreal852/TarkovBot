@@ -11,6 +11,7 @@ public static class ReactionsManager
     static ReactionsManager()
     {
         EmoteReactionsHandlers.Add(Constants.EmoteLargeRedSquare, new AmmoReactionHandler());
+        EmoteReactionsHandlers.Add(Constants.EmoteGrayQuestion, new ItemUsedInTasksReactionHandler());
         foreach (uint emotesId in Constants.SelectionEmotesIds)
             EmoteReactionsHandlers.Add(emotesId, new ItemSelectorReactionHandler());
     }

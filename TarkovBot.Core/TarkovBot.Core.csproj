@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="Resources\ItemsByIDs.graphql" />
-        <None Remove="Resources\ItemsByName.graphql" />
+        <None Remove="Resources\ItemsByIDs.graphql"/>
+        <None Remove="Resources\ItemsByName.graphql"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Resources\tasks.graphql"/>
+        <EmbeddedResource Include="Resources\tasks.graphql"/>
     </ItemGroup>
 </Project>

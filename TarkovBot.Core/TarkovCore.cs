@@ -7,6 +7,7 @@ public static class TarkovCore
     private static Timer         Timer         { get; } = new(OnTimerTick, TimeSpan.FromHours(2.0));
     public static  AmmoProvider  AmmoProvider  { get; } = new();
     public static  ItemsProvider ItemsProvider { get; } = new();
+    public static  TasksProvider TasksProvider { get; } = new();
 
     public static async Task Initialize()
     {
@@ -23,8 +24,10 @@ public static class TarkovCore
 
     private static async Task UpdateCaches()
     {
+        WriteLine("Updating providers cache...", ConsoleColor.Yellow);
         await AmmoProvider.UpdateCache().ConfigureAwait(false);
         await ItemsProvider.UpdateCache().ConfigureAwait(false);
+        await TasksProvider.UpdateCache().ConfigureAwait(false);
     }
 
     private static Task OnTimerTick()

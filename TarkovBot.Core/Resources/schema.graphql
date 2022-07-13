@@ -48,6 +48,33 @@ type Barter {
   requirements: [PriceRequirement]! @deprecated(reason: "Use level instead.")
 }
 
+type BossSpawn {
+  name: String!
+  spawnChance: Float!
+  spawnLocations: [BossSpawnLocation]!
+  escorts: [BossEscort]!
+  spawnTime: Int
+  spawnTimeRandom: Boolean
+  spawnTrigger: String
+}
+
+type BossEscort {
+  name: String!
+  amount: [BossEscortAmount]
+}
+
+type BossEscortAmount {
+  count: Int!
+  chance: Float!
+}
+
+# The chances of spawning in a given location are
+# very rough estimates and may be incaccurate
+type BossSpawnLocation {
+  name: String!
+  chance: Float!
+}
+
 type ContainedItem {
   item: Item!
   count: Float!
@@ -78,6 +105,7 @@ type GameProperty {
 
 type FleaMarket implements Vendor {
   name: String!
+  normalizedName: String!
   minPlayerLevel: Int!
   enabled: Boolean!
   sellOfferFeeRate: Float!
@@ -164,6 +192,7 @@ type Item {
   containsItems: [ContainedItem]
   category: ItemCategory
   categoryTop: ItemCategory
+  categories: [ItemCategory]!
   bsgCategoryId: String
   weight: Float
   velocity: Float
@@ -294,6 +323,10 @@ type ItemPropertiesHelmet {
   deafening: String
 }
 
+type ItemPropertiesKey {
+  uses: Int
+}
+
 type ItemPropertiesMagazine {
   ergonomics: Float
   recoil: Float
@@ -336,6 +369,9 @@ type ItemPropertiesPainkiller {
 
 type ItemPropertiesPreset {
   baseItem: Item!
+  ergonomics: Float
+  recoilVertical: Int
+  recoilHorizontal: Int
 }
 
 type ItemPropertiesScope {
@@ -370,6 +406,12 @@ type ItemPropertiesWeapon {
   recoilHorizontal: Int
   repairCost: Int
   sightingRange: Int
+  defaultWidth: Int
+  defaultHeight: Int
+  defaultErgonomics: Float
+  defaultRecoilVertical: Int
+  defaultRecoilHorizontal: Int
+  defaultWeight: Float
 }
 
 type ItemPropertiesWeaponMod {
@@ -378,13 +420,14 @@ type ItemPropertiesWeaponMod {
 }
 
 union ItemProperties =
-    ItemPropertiesAmmo
+  ItemPropertiesAmmo
   | ItemPropertiesArmor
   | ItemPropertiesArmorAttachment
   | ItemPropertiesChestRig
   | ItemPropertiesFoodDrink
   | ItemPropertiesGrenade
   | ItemPropertiesHelmet
+  | ItemPropertiesKey
   | ItemPropertiesMagazine
   | ItemPropertiesMedicalItem
   | ItemPropertiesMedKit
@@ -423,6 +466,7 @@ type Map {
   enemies: [String]
   raidDuration: Int
   players: String
+  bosses: [BossSpawn]!
 }
 
 type NumberCompare {
@@ -711,6 +755,7 @@ type TaskStatusRequirement {
 type Trader {
   id: ID!
   name: String!
+  normalizedName: String!
   resetTime: String
   currency: Item!
   discount: Float!

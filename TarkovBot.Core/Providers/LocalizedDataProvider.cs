@@ -24,8 +24,7 @@ public abstract class LocalizedDataProvider<TValue> : DataProvider<LanguageCode,
 
     public virtual async Task<int> UpdateCache(LanguageCode lang)
     {
-        TarkovCore.WriteLine($"[CACHE] Caching localized ({lang.ToString().ToUpper()}) {typeof(TValue).Name}...", ConsoleColor.Yellow);
-        TValue[]? elements = await Query.ExecuteAs<TValue[]>($"lang: {lang}");
+        TValue[]? elements = await Query.ExecuteAs<TValue[]>($"lang: {lang.ToString().ToLower()}");
         if (elements == null || elements.Length == 0)
         {
             TarkovCore.WriteLine($"[CACHE] Failed to cache {typeof(TValue).Name} !", ConsoleColor.Red);

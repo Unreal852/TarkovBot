@@ -1,9 +1,7 @@
-using System.Text.Json.Serialization;
-
-namespace TarkovBot.Core.Data;
+﻿namespace TarkovBot.Core.Data;
 
 public class AttributeThreshold
 {
-    [JsonPropertyName("name")]        public string        Name        { get; set; }
-    [JsonPropertyName("requirement")] public NumberCompare Requirement { get; set; }
+    public string        Name        { get; set; }
+    public NumberCompare Requirement { get; set; }
 }

@@ -6,7 +6,6 @@ using Guilded.Base.Embeds;
 using Guilded.Commands;
 using TarkovBot.Core;
 using TarkovBot.Core.Data;
-using TarkovBot.Core.Extensions;
 using TarkovBot.Guilded.Extensions;
 using TarkovBot.Guilded.Messages;
 using TarkovBot.Guilded.Messages.Implementations;
@@ -39,7 +38,7 @@ public class BotCommands : CommandModule
         Item[] items = TarkovCore.ItemsProvider.Where(languageCode, item =>
                                           item.Name != null                         &&
                                           !string.IsNullOrWhiteSpace(item.WikiLink) &&
-                                          item.Name.Contains(queryStr, StringComparison.CurrentCultureIgnoreCase))
+                                          item.Name.Contains(queryStr, StringComparison.InvariantCultureIgnoreCase))
                                  .ToArray();
         if (items is { Length: 0 })
         {
@@ -73,7 +72,6 @@ public class BotCommands : CommandModule
         MessageContent messageContent = item.BuildMessageContent();
         messageContent.ReplyMessageIds = new Collection<Guid> { commandEvent.Message.Id };
         Message message = await commandEvent.CreateMessageAsync(messageContent);
-        if (item.IsAmmo())
-            await message.AddReactionAsync(Constants.EmoteLargeRedSquare);
+        await message.AppendReactions(item);
     }
 }

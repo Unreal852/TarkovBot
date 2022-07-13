@@ -5,7 +5,7 @@ namespace TarkovBot.Core.Providers.Implementations;
 
 public class AmmoProvider : DataProvider<string, Ammo>
 {
-    public AmmoProvider() : base(GraphQlQueryBuilder.BuildQuery<Ammo>()!)
+    public AmmoProvider() : base(GraphQlQueryBuilder.FromType<Ammo>()!)
     {
     }
 
@@ -21,9 +21,7 @@ public class AmmoProvider : DataProvider<string, Ammo>
 
         Cache.Clear();
         foreach (Ammo ammoInfo in ammoInfos)
-        {
             Cache.TryAdd(ammoInfo.Item.Id, ammoInfo);
-        }
 
         TarkovCore.WriteLine($"[CACHE] Successfully cached {Count} ammos !", ConsoleColor.Green);
         return Count;

@@ -1,16 +1,18 @@
-using System.Text.Json.Serialization;
+
+
+// ReSharper disable InconsistentNaming
 
 namespace TarkovBot.Core.Data;
 
 public enum LanguageCode
 {
-    [JsonPropertyName("cz")] cz,
-    [JsonPropertyName("de")] de,
-    [JsonPropertyName("en")] en,
-    [JsonPropertyName("es")] es,
-    [JsonPropertyName("fr")] fr,
-    [JsonPropertyName("hu")] hu,
-    [JsonPropertyName("ru")] ru,
-    [JsonPropertyName("tr")] tr,
-    [JsonPropertyName("zh")] zh,
+    cz,
+    de,
+    en,
+    es,
+    fr,
+    hu,
+    ru,
+    tr,
+    zh,
 }

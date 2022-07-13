@@ -11,6 +11,7 @@ public class GraphQlQuery
 
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
+            PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter() }
     };
 
@@ -42,14 +43,17 @@ public class GraphQlQuery
         if (string.IsNullOrWhiteSpace(content))
             return default;
         JsonDocument document = JsonDocument.Parse(content);
-        JsonElement dataProperty = document.RootElement.GetProperty("data");
         try
         {
+            JsonElement dataProperty = document.RootElement.GetProperty("data");
             var data = dataProperty.GetProperty(QueryName).Deserialize<T>(JsonSerializerOptions);
             return data;
         }
         catch (Exception e)
         {
+            TarkovCore.WriteLine("RESPONSE ----------");
+            TarkovCore.WriteLine(content);
+            TarkovCore.WriteLine("ERROR ----------");
             TarkovCore.WriteLine(e.Message    + "", ConsoleColor.Red);
             TarkovCore.WriteLine(e.StackTrace + "", ConsoleColor.Red);
             throw;

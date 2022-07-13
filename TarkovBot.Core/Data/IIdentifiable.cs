@@ -1,6 +1,8 @@
-﻿namespace TarkovBot.Core.Data;
+using System.Text.Json.Serialization;
+
+namespace TarkovBot.Core.Data;
 
 public interface IIdentifiable
 {
-    public string Id { get; }
+    [JsonPropertyName("id")] public string Id { get; set; }
 }

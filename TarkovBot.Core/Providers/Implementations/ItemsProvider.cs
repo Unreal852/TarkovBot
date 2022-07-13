@@ -5,7 +5,7 @@ namespace TarkovBot.Core.Providers.Implementations;
 
 public class ItemsProvider : LocalizedDataProvider<Item>
 {
-    public ItemsProvider() : base(GraphQlQueryBuilder.BuildQuery<Item>()!)
+    public ItemsProvider() : base(GraphQlQueryBuilder.FromType<Item>()!)
     {
     }
 }

@@ -1,13 +1,6 @@
-using System.Text.Json.Serialization;
+﻿namespace TarkovBot.Core.Data;
 
-namespace TarkovBot.Core.Data;
-
-public class TaskObjectiveMark
+public class TaskObjectiveMark : TaskObjective
 {
-    [JsonPropertyName("id")]          public string? Id          { get; set; }
-    [JsonPropertyName("type")]        public string  Type        { get; set; }
-    [JsonPropertyName("description")] public string  Description { get; set; }
-    [JsonPropertyName("maps")]        public Map[]   Maps        { get; set; }
-    [JsonPropertyName("optional")]    public bool    Optional    { get; set; }
-    [JsonPropertyName("markerItem")]  public Item    MarkerItem  { get; set; }
+    public IdOnly MarkerItem { get; set; }
 }

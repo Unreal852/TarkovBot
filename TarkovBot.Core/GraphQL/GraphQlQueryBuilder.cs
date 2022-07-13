@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization;
+using TarkovBot.Core.Extensions;
 using TarkovBot.Core.GraphQL.Attributes;
 
 namespace TarkovBot.Core.GraphQL;
@@ -11,7 +12,7 @@ public static class GraphQlQueryBuilder
 {
     private static readonly BindingFlags BindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty;
 
-    public static GraphQlQuery? BuildQuery<T>()
+    public static GraphQlQuery? FromType<T>()
     {
         Type type = typeof(T);
         var sw = Stopwatch.StartNew();
@@ -31,6 +32,16 @@ public static class GraphQlQueryBuilder
         return new GraphQlQuery(graphQlAttribute.Name, builder.ToString());
     }
 
+    public static GraphQlQuery? FromResource(string name)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using Stream? stream = assembly.GetManifestResourceStream($"TarkovBot.Core.Resources.{name}{(name.EndsWith(".graphql") ? "" : ".graphql")}");
+        if (stream == null)
+            return default;
+        using var reader = new StreamReader(stream);
+        return new GraphQlQuery(name, reader.ReadToEnd());
+    }
+
     private static void BuildObject(Type type, StringBuilder builder)
     {
         builder.Append('{').AppendLine();
@@ -38,24 +49,23 @@ public static class GraphQlQueryBuilder
         {
             if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
                 continue;
-            JsonPropertyNameAttribute? jsonName = property.GetCustomAttribute<JsonPropertyNameAttribute>();
-            if (jsonName == null)
-                continue;
+            string propName = property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name;
+            propName = propName.FirstCharToLowerCase();
             if (IsPrimitive(property.PropertyType))
-                builder.Append(jsonName.Name).Append(',').AppendLine();
+                builder.Append(propName).Append(',').AppendLine();
             else if (property.PropertyType.IsArray)
             {
                 if (property.PropertyType.GetElementType()!.IsEnum)
-                    builder.Append(jsonName.Name).Append(',').AppendLine();
+                    builder.Append(propName).Append(',').AppendLine();
                 else
                 {
-                    builder.Append(jsonName.Name);
+                    builder.Append(propName);
                     BuildObject(property.PropertyType.GetElementType()!, builder);
                 }
             }
             else
             {
-                builder.Append(jsonName.Name);
+                builder.Append(propName);
                 BuildObject(property.PropertyType, builder);
             }
         }

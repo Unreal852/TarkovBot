@@ -17,6 +17,7 @@ internal class Constants
     public const uint EmoteNineId         = 90002207;
     public const uint EmoteTenId          = 90002208;
     public const uint EmoteLargeRedSquare = 90003276; // Ammo
+    public const uint EmoteGrayQuestion   = 90002189; // Tasks
 
     public static readonly uint[] SelectionEmotesIds =
     {
