@@ -1,15 +1,18 @@
 ﻿{
-    items(lang: en, name: "rechargeable battery")
+    items(lang: en, name: "bitcoin")
     {
-        id,
-        name,
-        usedInTasks {
-            name
-            minPlayerLevel
-            objectives {
-                type
-                __typename
-                optional
+        buyFor {
+            priceRUB,
+            currency,
+            vendor {
+                name
+            }
+        }
+        sellFor {
+            priceRUB,
+            currency,
+            vendor {
+                name
             }
         }
     }

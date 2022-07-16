@@ -1,9 +1,11 @@
+using System.Text.Json.Serialization;
+using TarkovBot.Core.Data.Infos;
 using TarkovBot.Core.GraphQL.Attributes;
 
 namespace TarkovBot.Core.Data;
 
 [GraphQl("items")]
-public class Item : IIdentifiable
+public class Item : IIdentifiable, IJsonOnDeserialized
 {
     public string           Id                    { get; set; }
     public string?          Name                  { get; set; }
@@ -41,4 +43,39 @@ public class Item : IIdentifiable
     public IdOnly[]         BartersUsing          { get; set; }
     public IdOnly[]         CraftsFor             { get; set; }
     public IdOnly[]         CraftsUsing           { get; set; }
+
+    /// <summary>
+    /// Cached item infos.
+    /// </summary>
+    [JsonIgnore]
+    public ItemInfos Infos { get; set; }
+
+    public void OnDeserialized()
+    {
+        int lowestPriceRub = LastLowPrice ?? 0;
+
+        ItemPrice? bestBuying = BuyFor?.Where(ip => ip.PriceRUB   > 0).MinBy(ip => ip.PriceRUB);
+        ItemPrice? bestSelling = SellFor?.Where(ip => ip.PriceRUB > 0).MaxBy(ip => ip.PriceRUB);
+
+        if (lowestPriceRub == 0)
+        {
+            if (bestBuying is { PriceRUB: > 0 } && bestBuying.PriceRUB < lowestPriceRub)
+                lowestPriceRub = bestBuying.PriceRUB.Value;
+
+            if (lowestPriceRub == 0 && bestSelling is { PriceRUB: > 0 })
+                lowestPriceRub = bestSelling.PriceRUB.Value;
+
+            if (lowestPriceRub == 0)
+                lowestPriceRub = BasePrice;
+        }
+
+        Infos = new()
+        {
+                TotalSlots = Width * Height,
+                LowestPriceRub = lowestPriceRub,
+                PricePerSlotRub = lowestPriceRub / (Width * Height),
+                BestBuyFor = bestBuying,
+                BestSellFor = bestSelling
+        };
+    }
 }

@@ -92,7 +92,7 @@ type Craft {
   source: String! @deprecated(reason: "Use stationLevel instead.")
   sourceName: String! @deprecated(reason: "Use stationLevel instead.")
   requirements: [PriceRequirement]!
-    @deprecated(reason: "Use stationLevel instead.")
+  @deprecated(reason: "Use stationLevel instead.")
 }
 
 type GameProperty {
@@ -214,7 +214,7 @@ type Item {
     requireAll: Boolean
   ): Int
   translation(languageCode: LanguageCode): ItemTranslation
-    @deprecated(reason: "Use the lang argument on queries instead.")
+  @deprecated(reason: "Use the lang argument on queries instead.")
   traderPrices: [TraderPrice]! @deprecated(reason: "Use sellFor instead.")
   bsgCategory: ItemCategory @deprecated(reason: "Use category instead.")
 }
@@ -848,18 +848,18 @@ type Query {
   armorMaterials(lang: LanguageCode): [ArmorMaterial]!
   playerLevels: [PlayerLevel]!
   hideoutModules: [HideoutModule]
-    @deprecated(reason: "Use hideoutStations instead.")
+  @deprecated(reason: "Use hideoutStations instead.")
   itemsByIDs(ids: [ID]!): [Item] @deprecated(reason: "Use items instead.")
   itemsByType(type: ItemType!): [Item]!
-    @deprecated(reason: "Use items instead.")
+  @deprecated(reason: "Use items instead.")
   itemsByName(name: String!): [Item]! @deprecated(reason: "Use items instead.")
   itemByNormalizedName(normalizedName: String!): Item
-    @deprecated(reason: "Use item instead.")
+  @deprecated(reason: "Use item instead.")
   itemsByBsgCategoryId(bsgCategoryId: String!): [Item]!
-    @deprecated(reason: "Use items instead.")
+  @deprecated(reason: "Use items instead.")
   quests: [Quest] @deprecated(reason: "Use tasks instead.")
   traderResetTimes: [TraderResetTime]
-    @deprecated(reason: "Use traders instead.")
+  @deprecated(reason: "Use traders instead.")
 }
 
 # The below types are all deprecated and may not return current data.
@@ -867,9 +867,9 @@ type Query {
 type ItemTranslation {
   name: String @deprecated(reason: "Use the lang argument on queries instead.")
   shortName: String
-    @deprecated(reason: "Use the lang argument on queries instead.")
+  @deprecated(reason: "Use the lang argument on queries instead.")
   description: String
-    @deprecated(reason: "Use the lang argument on queries instead.")
+  @deprecated(reason: "Use the lang argument on queries instead.")
 }
 
 # HideoutModule has been replaced with HideoutStation.
@@ -892,7 +892,7 @@ type Quest {
   exp: Int! @deprecated(reason: "Use Task type instead.")
   unlocks: [String]! @deprecated(reason: "Use Task type instead.")
   reputation: [QuestRewardReputation!]
-    @deprecated(reason: "Use Task type instead.")
+  @deprecated(reason: "Use Task type instead.")
   objectives: [QuestObjective]! @deprecated(reason: "Use Task type instead.")
 }
 
@@ -930,7 +930,7 @@ type TraderPrice {
 type TraderResetTime {
   name: String @deprecated(reason: "Use Trader.name type instead.")
   resetTimestamp: String
-    @deprecated(reason: "Use Trader.resetTime type instead.")
+  @deprecated(reason: "Use Trader.resetTime type instead.")
 }
 
 enum ItemType {

@@ -26,32 +26,30 @@ public static class ItemExtensions
                 Fields = new List<EmbedField>(),
         };
 
-        embed.AddField("Price", $"{item.BasePrice}\n*(base price)*", true);
-        embed.AddField("Price Per Slot", $"{item.BasePrice / (item.Width * item.Height)}\n*({item.Width * item.Height} slots)*", true);
-        ItemPrice sellFor = item.GetBestSellingTrader();
-        ItemPrice buyFor = item.GetBestBuyingTrader();
+        embed.AddField("Price", $"{item.Infos.LowestPriceRub:N0}**₽**\n*(lowest price)*", true);
+        embed.AddField("Price Per Slot", $"{item.Infos.PricePerSlotRub:N0}\n*({item.Infos.TotalSlots} slot{(item.Infos.TotalSlots > 1 ? "s" : "")})*", true);
 
-        if (sellFor != null)
-            embed.AddField($"Sell to {sellFor.Vendor.Name}", $"{sellFor.Price}{sellFor.GetCurrencyChar()}", true);
-
-        if (buyFor != null)
-            embed.AddField($"Buy From {buyFor.Vendor.Name}", $"{buyFor.Price}{buyFor.GetCurrencyChar()}", true);
+        if (item.Infos.BestSellFor != null)
+        {
+            ItemPrice sellFor = item.Infos.BestSellFor;
+            embed.AddField($"Sell to {sellFor.Vendor.Name}", $"{sellFor.PriceRUB:N0}{sellFor.GetCurrencyChar()}", true);
+        }
 
         messageContent.Embeds.Add(embed);
 
-        if (item.IsAmmo(out Ammo ammo))
+        if (item.IsAmmo(out Ammo? ammo))
             embed.Color = ammo!.GetPenetrationClassColor();
 
         return messageContent;
     }
 
-    public static ItemPrice GetBestSellingTrader(this Item item)
+    public static ItemPrice? GetBestSellingTrader(this Item item)
     {
-        return item.SellFor?.Where(s => s.Price is > 0).MaxBy(s => s.Price);
+        return item.SellFor?.MaxBy(s => s.PriceRUB);
     }
 
-    public static ItemPrice GetBestBuyingTrader(this Item item)
+    public static ItemPrice? GetBestBuyingTrader(this Item item)
     {
-        return item.BuyFor?.Where(s => s.Price is > 0).MinBy(s => s.Price);
+        return item.BuyFor?.Where(s => s.PriceRUB is > 0).MinBy(s => s.PriceRUB);
     }
 }

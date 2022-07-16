@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using TarkovBot.Core.Extensions;
 
 namespace TarkovBot.Core.GraphQL;
 
@@ -26,7 +27,7 @@ public class GraphQlQuery
 
     public async Task<string> Execute(string args)
     {
-        var data = new Dictionary<string, string> { { "query", Query.Replace(QueryArgsDelimiter, args) } };
+        var data = new Dictionary<string, string> { { "query", Query.ReplaceFirst(QueryArgsDelimiter, args) } };
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync(Constants.TarkovDevUrl, data);
         string responseContent = await response.Content.ReadAsStringAsync();
         return responseContent;

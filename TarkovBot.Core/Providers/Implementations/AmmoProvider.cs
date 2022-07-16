@@ -11,7 +11,6 @@ public class AmmoProvider : DataProvider<string, Ammo>
 
     public override async Task<int> UpdateCache()
     {
-        TarkovCore.WriteLine("[CACHE] Caching ammos...", ConsoleColor.Yellow);
         Ammo[]? ammoInfos = await Query.ExecuteAs<Ammo[]>("lang: en");
         if (ammoInfos == null || ammoInfos.Length == 0)
         {
