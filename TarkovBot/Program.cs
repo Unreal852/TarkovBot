@@ -1,56 +1,62 @@
 ﻿using System.Text.Json;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 using TarkovBot;
+using TarkovBot.EFT.Data.Provider;
 using TarkovBot.Guilded;
-using static TarkovBot.Core.TarkovCore;
 
 public class Program
 {
-    //private DiscordBot DiscordBot { get; } = new();
-
-    private GuildedBot GuildedBot { get; } = new();
+    private static GuildedBot GuildedBot { get; } = new();
 
     public static Task Main(string[] args)
     {
-        return new Program().MainAsync();
+        return MainAsync();
     }
 
-    private async Task MainAsync()
+    private static async Task MainAsync()
     {
-#if RELEASE
-        string filePath = Path.Combine(Environment.CurrentDirectory, Constants.TokensFile);
-        if (!File.Exists(filePath))
+        Log.Logger = new LoggerConfiguration()
+                    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                    .WriteTo.File("logs/logs_.log", rollingInterval: RollingInterval.Day).CreateLogger();
+
+        string configFilePath = Path.Combine(Environment.CurrentDirectory, Constants.BotConfigFile);
+        var config = new BotConfig();
+        if (!config.IsValid)
         {
-            WriteLine("Missing tokens file.", ConsoleColor.Red);
-            return;
+            if (!File.Exists(configFilePath))
+            {
+                Log.Error("The bot configuration file does not exists");
+                return;
+            }
+
+            config = await JsonSerializer.DeserializeAsync<BotConfig>(File.OpenRead(configFilePath));
+            if (config is not { IsValid: true })
+            {
+                Log.Error("The bot configuration file is invalid");
+                return;
+            }
         }
 
-        await using FileStream reader = File.OpenRead(filePath);
-        var tokens = await JsonSerializer.DeserializeAsync<BotsTokens>(reader);
-        if (tokens == null)
-        {
-            WriteLine("Failed to deserialize tokens.", ConsoleColor.Red);
-            return;
-        }
-#elif DEBUG
-        var tokens = new BotsTokens();
-#endif
-
-        await Initialize();
-
-        //await DiscordBot.Initialize(tokens.DiscordToken);
-        await GuildedBot.Initialize(tokens.GuildedToken);
+        await DataProviders.Initialize().ConfigureAwait(false);
+        await GuildedBot.Initialize(config).ConfigureAwait(false);
 
         HandleInput();
     }
 
-    private void HandleInput()
+    /// <summary>
+    /// Handle basic user input and keep the console running.
+    /// </summary>
+    private static void HandleInput()
     {
-        string input;
+        string? input;
         do
         {
             input = Console.ReadLine();
             if (input == "clear")
                 Console.Clear();
-        } while (input != null && input != "exit");
+        } while (input != "exit");
+
+        Log.Information("Stopping bot");
     }
 }

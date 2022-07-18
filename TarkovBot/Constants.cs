@@ -1,6 +1,7 @@
 ﻿namespace TarkovBot;
 
-internal static class Constants
+public static class Constants
 {
-    public const string TokensFile = "Tokens.json";
+    public const string BotConfigFile = "Tokens.json";
+    public const string LogsFile      = "logs.txt";
 }
