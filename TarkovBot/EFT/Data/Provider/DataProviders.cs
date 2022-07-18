@@ -9,10 +9,10 @@ namespace TarkovBot.EFT.Data.Provider;
 
 public static class DataProviders
 {
-    private static Timer           Timer         { get; } = new(OnTimerTick, TimeSpan.FromHours(2.0));
-    public static  AmmoProvider    AmmoProvider  { get; } = new();
-    public static  ItemsProviderV2 ItemsProvider { get; } = new();
-    public static  TasksProvider   TasksProvider { get; } = new();
+    private static Timer         Timer         { get; } = new(OnTimerTick, TimeSpan.FromHours(2.0));
+    public static  AmmoProvider  AmmoProvider  { get; } = new();
+    public static  ItemsProvider ItemsProvider { get; } = new();
+    public static  TasksProvider TasksProvider { get; } = new();
 
     public static async Task Initialize()
     {
