@@ -5,6 +5,7 @@ using Guilded.Base.Events;
 using TarkovBot.EFT.Data;
 using TarkovBot.EFT.Data.Provider;
 using TarkovBot.EFT.Data.Raw;
+using TarkovBot.Extensions;
 using Task = TarkovBot.EFT.Data.Raw.Task;
 
 namespace TarkovBot.Guilded.Reactions.Handlers;
@@ -20,7 +21,8 @@ public class ItemUsedInTasksReactionHandler : IMessageReactionHandler
         EmbedFooter? footer = originalEmbed.Footer;
         if (footer == null)
             return;
-        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(LanguageCode.en, footer.Text);
+        (LanguageCode Languague, string Id) infos = footer.ParseInfos();
+        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(infos.Languague, infos.Id);
         if (item == null || item.Item.UsedInTasks is { Length: 0 })
             return;
 
@@ -36,7 +38,7 @@ public class ItemUsedInTasksReactionHandler : IMessageReactionHandler
         for (int i = 0; i < maxFields; i++)
         {
             IdOnly id = item.Item.UsedInTasks[i];
-            Task? task = DataProviders.TasksProvider.GetByKey(LanguageCode.en, id.Id);
+            Task? task = DataProviders.TasksProvider.GetByKey(infos.Languague, id.Id);
             TaskObjective? objective = task?.Objectives.FirstOrDefault(o => o.Item?.Id == item.Id);
             if (task == null || objective == null || objective.Count == 0)
                 continue;

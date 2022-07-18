@@ -4,6 +4,8 @@ using Guilded.Base.Embeds;
 using TarkovBot.EFT.Data;
 using TarkovBot.EFT.Data.Raw;
 
+// ReSharper disable HeapView.BoxingAllocation
+
 namespace TarkovBot.Extensions;
 
 /// <summary>
@@ -16,7 +18,7 @@ public static class ItemInfosExtensions
         return item.Ammo != null;
     }
 
-    public static MessageContent BuildMessageContent(this ItemInfos item)
+    public static MessageContent BuildMessageContent(this ItemInfos item, LanguageCode lang)
     {
         var messageContent = new MessageContent
         {
@@ -28,7 +30,7 @@ public static class ItemInfosExtensions
                 Title = $"{item.Name} ({item.ShortName})",
                 Url = new Uri(item.WikiLink),
                 Thumbnail = new EmbedMedia(item.Item.GridImageLink ?? ""),
-                Footer = new EmbedFooter(item.Id),
+                Footer = new EmbedFooter($"{lang}-{item.Id}"),
                 Timestamp = item.Item.Updated,
                 Author = new EmbedAuthor("Provided by tarkov.dev", "https://tarkov.dev/"),
                 Fields = new List<EmbedField>(),
@@ -72,11 +74,11 @@ public static class ItemInfosExtensions
         embed.AddField("Damages (Armor)", ammo.Ammo.ArmorDamage, true);
         embed.AddField("Velocity ", $"{ammo.Ammo.InitialSpeed} m/s", true);
         embed.AddField("Penetration Power", ammo.Ammo.PenetrationPower, true);
-        embed.AddField("Frag Chances", (int?)(ammo.Ammo.FragmentationChance * 100) ?? 0, true);
-        if (ammo.Ammo.LightBleedModifier is > 0)
-            embed.AddField("Light Bleed Chances", (int?)(ammo.Ammo.LightBleedModifier * 100) ?? 0, true);
-        if (ammo.Ammo.HeavyBleedModifier is > 0)
-            embed.AddField("Heavy Bleed Chances", (int?)(ammo.Ammo.HeavyBleedModifier * 100) ?? 0, true);
+        embed.AddField("Frag Chances", ammo.Ammo.FragmentationChance * 100, true);
+        if (ammo.Ammo.LightBleedModifier > 0)
+            embed.AddField("Light Bleed Chances", ammo.Ammo.LightBleedModifier * 100, true);
+        if (ammo.Ammo.HeavyBleedModifier > 0)
+            embed.AddField("Heavy Bleed Chances", ammo.Ammo.HeavyBleedModifier * 100, true);
 
         embed.AddField("Armor Class Real (Effective)",
                 $"{ammo.RealArmorPenetration} {(ammo.RealArmorPenetration != ammo.EffectiveArmorPenetration ? $"({ammo.EffectiveArmorPenetration})" : string.Empty)}",

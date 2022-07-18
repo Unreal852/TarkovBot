@@ -68,7 +68,7 @@ public class BotCommands : CommandModule
         }
 
         ItemInfos item = items[0];
-        MessageContent messageContent = item.BuildMessageContent();
+        MessageContent messageContent = item.BuildMessageContent(languageCode);
         messageContent.ReplyMessageIds = new Collection<Guid> { commandEvent.Message.Id };
         Message message = await commandEvent.CreateMessageAsync(messageContent);
         await message.AppendReactions(item);

@@ -18,7 +18,8 @@ public class AmmoReactionHandler : IMessageReactionHandler
         EmbedFooter? footer = message.Embeds?[0].Footer;
         if (footer == null)
             return;
-        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(LanguageCode.en, footer.Text);
+        (LanguageCode Languague, string Id) infos = footer.ParseInfos();
+        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(infos.Languague, infos.Id);
         if (item == null || !item.IsAmmo())
             return;
         MessageContent messageContent = item.BuildAmmoMessageContent()!;

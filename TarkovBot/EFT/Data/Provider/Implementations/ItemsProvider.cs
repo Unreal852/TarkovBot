@@ -26,7 +26,7 @@ public class ItemsProvider : LocalizedDataProvider<ItemInfos>
         innerCache.Clear();
         foreach (Item element in elements)
         {
-            ItemInfos? item = ItemInfos.FromItem(element);
+            ItemInfos? item = ItemInfos.FromItem(element, lang);
             if (item == null)
                 continue;
             innerCache.TryAdd(element.Id, item);
