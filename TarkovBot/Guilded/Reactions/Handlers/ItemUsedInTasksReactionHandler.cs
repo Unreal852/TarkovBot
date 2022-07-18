@@ -37,7 +37,7 @@ public class ItemUsedInTasksReactionHandler : IMessageReactionHandler
         {
             IdOnly id = item.Item.UsedInTasks[i];
             Task? task = DataProviders.TasksProvider.GetByKey(LanguageCode.en, id.Id);
-            TaskObjective? objective = task?.Objectives.FirstOrDefault(o => o.Type == TaskType.findItem && o.Item?.Id == item.Id);
+            TaskObjective? objective = task?.Objectives.FirstOrDefault(o => o.Item?.Id == item.Id);
             if (task == null || objective == null || objective.Count == 0)
                 continue;
             originalEmbed.AddField(task.Name, $"{objective.Description}\n*({objective.Count} required)* Minimum Level {task.MinPlayerLevel}");

@@ -26,7 +26,7 @@ public static class ItemInfosExtensions
         var embed = new Embed
         {
                 Title = $"{item.Name} ({item.ShortName})",
-                Url = new Uri(item.WikiLink                        ?? ""),
+                Url = new Uri(item.WikiLink),
                 Thumbnail = new EmbedMedia(item.Item.GridImageLink ?? ""),
                 Footer = new EmbedFooter(item.Id),
                 Timestamp = item.Item.Updated,
