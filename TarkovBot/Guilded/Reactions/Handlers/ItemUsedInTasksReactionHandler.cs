@@ -22,7 +22,7 @@ public class ItemUsedInTasksReactionHandler : IMessageReactionHandler
         if (footer == null)
             return;
         (LanguageCode Languague, string Id) infos = footer.ParseInfos();
-        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(infos.Languague, infos.Id);
+        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(infos.Id);
         if (item == null || item.Item.UsedInTasks is { Length: 0 })
             return;
 

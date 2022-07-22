@@ -4,8 +4,9 @@
 /// Represents the name and short name of an item.
 /// This may be used later when storing multiple localized names within a single <see cref="ItemInfos"/>
 /// </summary>
-public class ItemName
+public class LocalizedItemInfos : IIdentifiable
 {
-    public string Name      { get; init; }
-    public string ShortName { get; init; }
+    public string Id        { get; set; }
+    public string Name      { get; set; }
+    public string ShortName { get; set; }
 }

@@ -1,5 +1,5 @@
 ﻿{
-    items(lang: en, name: "flash drive")
+    items(${ARGS})
     {
         id,
         name,

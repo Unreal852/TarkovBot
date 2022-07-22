@@ -1,6 +1,5 @@
 ﻿using TarkovBot.EFT.Data;
 using TarkovBot.EFT.Data.Provider;
-using TarkovBot.EFT.Data.Raw;
 
 namespace TarkovBot.Extensions;
 
@@ -9,12 +8,12 @@ namespace TarkovBot.Extensions;
 /// </summary>
 public static class IdOnlyExtensions
 {
-    public static ItemInfos? GetItemInfos(this IdOnly idOnly, LanguageCode languageCode)
+    public static ItemInfos? GetItemInfos(this IdOnly idOnly)
     {
-        return DataProviders.ItemsProvider.GetByKey(languageCode, idOnly.Id);
+        return DataProviders.ItemsProvider.GetByKey(idOnly.Id);
     }
 
-    public static AmmoInfos? GetAmmoInfos(this IdOnly idOnly, LanguageCode languageCode)
+    public static AmmoInfos? GetAmmoInfos(this IdOnly idOnly)
     {
         return DataProviders.AmmoProvider.GetByKey(idOnly.Id);
     }

@@ -35,16 +35,16 @@ public static class GraphQlQueryBuilder
         return graphQlQuery;
     }
 
-    public static GraphQlQuery? FromResource(string name)
+    public static GraphQlQuery? FromResource(string fileName, string queryName = "")
     {
-        using (Operation.Time("Built GraphQL query from resource '{Name}'", name))
+        using (Operation.Time("Built GraphQL query from resource '{Name}'", fileName))
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using Stream? stream = assembly.GetManifestResourceStream($"TarkovBot.Resources.{name}{(name.EndsWith(".ql") ? "" : ".ql")}");
+            using Stream? stream = assembly.GetManifestResourceStream($"TarkovBot.Resources.{fileName}{(fileName.EndsWith(".ql") ? "" : ".ql")}");
             if (stream == null)
                 return default;
             using var reader = new StreamReader(stream);
-            return new GraphQlQuery(name, reader.ReadToEnd());
+            return new GraphQlQuery(string.IsNullOrWhiteSpace(queryName) ? fileName : queryName, reader.ReadToEnd());
         }
     }
 

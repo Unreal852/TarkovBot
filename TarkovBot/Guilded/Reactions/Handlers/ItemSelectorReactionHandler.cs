@@ -23,7 +23,7 @@ public class ItemSelectorReactionHandler : IMessageReactionHandler
             }
 
             ItemInfos item = messageSelector.Items[index];
-            MessageContent messageContent = item.BuildMessageContent(item.Language);
+            MessageContent messageContent = item.BuildMessageContent(messageSelector.Language);
             messageContent.ReplyMessageIds = messageSelector.Message.ReplyMessageIds;
             Message message = await bot.CreateMessageAsync(e.ChannelId, messageContent);
             await message.AppendReactions(item);

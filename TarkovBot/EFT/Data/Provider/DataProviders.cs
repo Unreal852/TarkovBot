@@ -9,13 +9,14 @@ namespace TarkovBot.EFT.Data.Provider;
 
 public static class DataProviders
 {
-    private static Timer         Timer         { get; } = new(OnTimerTick, TimeSpan.FromHours(2.0));
-    public static  AmmoProvider  AmmoProvider  { get; } = new();
-    public static  ItemsProvider ItemsProvider { get; } = new();
-    public static  TasksProvider TasksProvider { get; } = new();
+    private static readonly Timer         Timer         = new(OnTimerTick, TimeSpan.FromHours(2.0));
+    public static readonly  AmmoProvider  AmmoProvider  = new();
+    public static readonly  ItemsProvider ItemsProvider = new();
+    public static readonly  TasksProvider TasksProvider = new();
 
     public static async Task Initialize()
     {
+        Log.Information("Initializing data providers");
         await UpdateCaches().ConfigureAwait(false);
         Timer.Start();
     }
@@ -26,8 +27,8 @@ public static class DataProviders
         using (Operation.Time("Updated data providers cache"))
         {
             await AmmoProvider.UpdateCache().ConfigureAwait(false);
-            await ItemsProvider.UpdateCache().ConfigureAwait(false);
             await TasksProvider.UpdateCache().ConfigureAwait(false);
+            await ItemsProvider.UpdateCache().ConfigureAwait(false);
         }
     }
 

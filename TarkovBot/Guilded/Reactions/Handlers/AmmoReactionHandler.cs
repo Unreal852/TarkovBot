@@ -19,10 +19,10 @@ public class AmmoReactionHandler : IMessageReactionHandler
         if (footer == null)
             return;
         (LanguageCode Languague, string Id) infos = footer.ParseInfos();
-        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(infos.Languague, infos.Id);
+        ItemInfos? item = DataProviders.ItemsProvider.GetByKey(infos.Id);
         if (item == null || !item.IsAmmo())
             return;
-        MessageContent messageContent = item.BuildAmmoMessageContent()!;
+        MessageContent messageContent = item.BuildAmmoMessageContent(infos.Languague)!;
         messageContent.ReplyMessageIds = message.ReplyMessageIds;
         await bot.CreateMessageAsync(e.ChannelId, messageContent);
     }

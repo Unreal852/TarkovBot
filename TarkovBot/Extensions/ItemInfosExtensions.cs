@@ -25,9 +25,11 @@ public static class ItemInfosExtensions
                 Embeds = new Collection<Embed>()
         };
 
+        LocalizedItemInfos localizedInfos = item.GetLocalizedInfos(lang);
+
         var embed = new Embed
         {
-                Title = $"{item.Name} ({item.ShortName})",
+                Title = $"{localizedInfos.Name} ({localizedInfos.ShortName})",
                 Url = new Uri(item.WikiLink),
                 Thumbnail = new EmbedMedia(item.Item.GridImageLink ?? ""),
                 Footer = new EmbedFooter($"{lang}-{item.Id}"),
@@ -53,15 +55,16 @@ public static class ItemInfosExtensions
         return messageContent;
     }
 
-    public static Embed? BuildAmmoEmbed(this ItemInfos item)
+    public static Embed? BuildAmmoEmbed(this ItemInfos item, LanguageCode languageCode)
     {
         if (!item.IsAmmo())
             return default;
+        LocalizedItemInfos localizedInfos = item.GetLocalizedInfos(languageCode);
         AmmoInfos ammo = item.Ammo!;
 
         var embed = new Embed
         {
-                Title = $"{item.Name} ({item.ShortName})",
+                Title = $"{localizedInfos.Name} ({localizedInfos.ShortName})",
                 Url = new Uri(item.WikiLink                        ?? ""),
                 Thumbnail = new EmbedMedia(item.Item.GridImageLink ?? ""),
                 Footer = new EmbedFooter("Last Updated"),
@@ -87,9 +90,9 @@ public static class ItemInfosExtensions
         return embed;
     }
 
-    public static MessageContent? BuildAmmoMessageContent(this ItemInfos item)
+    public static MessageContent? BuildAmmoMessageContent(this ItemInfos item, LanguageCode languageCode)
     {
-        Embed? embed = item.BuildAmmoEmbed();
+        Embed? embed = item.BuildAmmoEmbed(languageCode);
         if (embed == null)
             return default;
         var messageContent = new MessageContent

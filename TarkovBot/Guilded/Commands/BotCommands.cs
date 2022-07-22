@@ -36,8 +36,7 @@ public class BotCommands : CommandModule
             languageCode = LanguageCode.en;
         }
 
-        ItemInfos[] items = DataProviders.ItemsProvider.Where(languageCode,
-                item => item.Name.Contains(queryStr, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+        ItemInfos[] items = DataProviders.ItemsProvider.FindByLocalizedName(languageCode, queryStr).ToArray();
 
         if (items is { Length: 0 })
         {
@@ -58,10 +57,10 @@ public class BotCommands : CommandModule
             builder.AppendLine("You can select one of the items below by reacting to this message.").AppendLine();
             int count = items.Length <= 11 ? items.Length : 11;
             for (var i = 0; i < count; i++)
-                builder.AppendLine($"**{i}** - {items[i].Name}");
+                builder.AppendLine($"**{i}** - {items[i].GetLocalizedInfos(languageCode).Name}");
             embed.Description = builder.ToString();
             Message msg = await commandEvent.ReplyAsync(true, embeds: embed);
-            MessagesManager.AddMessage(msg.Id, new ItemsMessageSelector(commandEvent.Message, msg, items));
+            MessagesManager.AddMessage(msg.Id, new ItemsMessageSelector(languageCode, commandEvent.Message, msg, items));
             for (var i = 0; i < count; i++)
                 await msg.AddReactionAsync(EmotesConstants.SelectionEmotesIds[i]);
             return;

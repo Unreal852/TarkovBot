@@ -27,31 +27,45 @@ public class ItemInfos : IIdentifiable
                 lowestPriceRub = item.BasePrice;
         }
 
-        return new()
+        ItemInfos itemInfos = new()
         {
                 TotalSlots = item.Width * item.Height,
                 LowestPriceRub = lowestPriceRub,
                 PricePerSlotRub = lowestPriceRub / (item.Width * item.Height),
                 BestBuyFor = bestBuying,
                 BestSellFor = bestSelling,
-                Language = languageCode,
                 Item = item,
                 Ammo = DataProviders.AmmoProvider.GetByKey(item.Id)
         };
+
+        itemInfos.AddLocalizedInfos(languageCode, new LocalizedItemInfos { Name = item.Name, ShortName = item.ShortName });
+
+        return itemInfos;
     }
 
-    public string       Id              => Item.Id;
-    public string       Name            => Item.Name      ?? string.Empty;
-    public string       ShortName       => Item.ShortName ?? string.Empty;
-    public string       WikiLink        => Item.WikiLink  ?? string.Empty;
-    public int          Width           => Item.Width;
-    public int          Height          => Item.Height;
-    public int          TotalSlots      { get; init; }
-    public int          LowestPriceRub  { get; init; }
-    public int          PricePerSlotRub { get; init; }
-    public LanguageCode Language        { get; init; }
-    public Item         Item            { get; init; }
-    public AmmoInfos?   Ammo            { get; init; }
-    public ItemPrice?   BestBuyFor      { get; init; }
-    public ItemPrice?   BestSellFor     { get; init; }
+    private readonly Dictionary<LanguageCode, LocalizedItemInfos> _localizedNames = new();
+
+    public string     Id              => Item.Id;
+    public string     Name            => Item.Name      ?? string.Empty;
+    public string     ShortName       => Item.ShortName ?? string.Empty;
+    public string     WikiLink        => Item.WikiLink  ?? string.Empty;
+    public int        Width           => Item.Width;
+    public int        Height          => Item.Height;
+    public int        TotalSlots      { get; init; }
+    public int        LowestPriceRub  { get; init; }
+    public int        PricePerSlotRub { get; init; }
+    public Item       Item            { get; init; }
+    public AmmoInfos? Ammo            { get; init; }
+    public ItemPrice? BestBuyFor      { get; init; }
+    public ItemPrice? BestSellFor     { get; init; }
+
+    public void AddLocalizedInfos(LanguageCode languageCode, LocalizedItemInfos localizedItemInfos)
+    {
+        _localizedNames.Add(languageCode, localizedItemInfos);
+    }
+
+    public LocalizedItemInfos GetLocalizedInfos(LanguageCode languageCode)
+    {
+        return _localizedNames.ContainsKey(languageCode) ? _localizedNames[languageCode] : _localizedNames[LanguageCode.en];
+    }
 }

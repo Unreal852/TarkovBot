@@ -24,8 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Guilded" Version="0.8.6"/>
-        <PackageReference Include="Guilded.Commands" Version="0.8.6"/>
+        <PackageReference Include="Guilded" Version="0.9.0"/>
+        <PackageReference Include="Guilded.Commands" Version="0.9.0"/>
         <PackageReference Include="Serilog" Version="2.11.1-dev-01397"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.2-dev-00890"/>
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947"/>
@@ -33,7 +33,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="Resources\items_names.ql"/>
         <EmbeddedResource Include="Resources\tasks.ql"/>
+        <None Remove="Resources\items.ql"/>
+        <EmbeddedResource Include="Resources\items.ql"/>
     </ItemGroup>
 
 </Project>
