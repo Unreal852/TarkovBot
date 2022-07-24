@@ -1,8 +1,7 @@
 ﻿namespace TarkovBot.EFT.Data;
 
 /// <summary>
-/// Represents the name and short name of an item.
-/// This may be used later when storing multiple localized names within a single <see cref="ItemInfos"/>
+/// Represents the localized name and short name of an item.
 /// </summary>
 public class LocalizedItemInfos : IIdentifiable
 {

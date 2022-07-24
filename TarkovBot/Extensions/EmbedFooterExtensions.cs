@@ -1,6 +1,6 @@
 ﻿using Guilded.Base.Embeds;
 using Serilog;
-using TarkovBot.EFT.Data.Raw;
+using TarkovBot.EFT.Data;
 
 namespace TarkovBot.Extensions;
 

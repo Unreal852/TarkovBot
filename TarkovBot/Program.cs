@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using TarkovBot;
@@ -30,7 +31,8 @@ public class Program
                 return;
             }
 
-            config = await JsonSerializer.DeserializeAsync<BotConfig>(File.OpenRead(configFilePath));
+            config = await JsonSerializer.DeserializeAsync<BotConfig>(File.OpenRead(configFilePath),
+                    new JsonSerializerOptions() { Converters = { new JsonStringEnumConverter() } });
             if (config is not { IsValid: true })
             {
                 Log.Error("The bot configuration file is invalid");

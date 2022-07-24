@@ -1,6 +1,6 @@
 // ReSharper disable InconsistentNaming
 
-namespace TarkovBot.EFT.Data.Raw;
+namespace TarkovBot.EFT.Data;
 
 public enum LanguageCode
 {

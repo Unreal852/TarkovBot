@@ -6,23 +6,21 @@ using Guilded.Base.Embeds;
 using Guilded.Commands;
 using TarkovBot.EFT.Data;
 using TarkovBot.EFT.Data.Provider;
-using TarkovBot.EFT.Data.Raw;
 using TarkovBot.Extensions;
 using TarkovBot.Guilded.Messages;
 using TarkovBot.Guilded.Messages.Implementations;
-using Task = System.Threading.Tasks.Task;
 
 namespace TarkovBot.Guilded.Commands;
 
 [SuppressMessage("Performance", "CA1806:Ne pas ignorer les résultats des méthodes")]
-public class BotCommands : CommandModule
+public class SearchItemCommand : CommandModule
 {
-    public BotCommands(GuildedBot botClient)
+    public SearchItemCommand(GuildedBot botClient)
     {
         BotClient = botClient;
     }
 
-    public GuildedBot BotClient { get; }
+    private GuildedBot BotClient { get; }
 
     [Command("item", Aliases = new[] { "i" })]
     public async Task ItemSearchCommandAsync(CommandEvent commandEvent, [CommandParam] params string[] query)

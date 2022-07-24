@@ -38,7 +38,8 @@ public class GuildedBot
             return;
         }
 
-        Bot.AddCommands(new BotCommands(this), botConfig.Prefix);
+        Bot.AddCommands(new SearchItemCommand(this), botConfig.Prefix);
+        Bot.AddCommands(new HelpCommand(this), botConfig.Prefix);
 
         Bot.ReactionAdded.Subscribe(OnMessageReactionAdded);
 
