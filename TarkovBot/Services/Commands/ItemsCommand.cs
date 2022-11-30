@@ -50,7 +50,7 @@ public class ItemsCommand : CommandModule, IGuildedCommand
 
         var embed = new Embed
         {
-                Title = "Select an item by reaction to this message",
+                Title = "Select an item by reacting to this message",
                 Footer = new EmbedFooter("Expire in one minute")
         };
 
