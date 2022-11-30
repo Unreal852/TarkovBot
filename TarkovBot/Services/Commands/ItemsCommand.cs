@@ -18,6 +18,18 @@ public class ItemsCommand : CommandModule, IGuildedCommand
         _guildedReactionService = guildedMessageReactionService;
     }
 
+    [Command("help", Aliases = new[] { "h" })]
+    public Task HelpCommand(CommandEvent e)
+    {
+        var embed = new Embed
+        {
+                Title = "EFT Commands"
+        };
+        embed.AddField("t!item <item_name> or t!i",
+                "Search for a specific item infos. \n Example: t!i afak");
+        return e.ReplyAsync(embeds: embed);
+    }
+
     [Command("item", Aliases = new[] { "i" })]
     public async Task ItemCommand(CommandEvent e, [CommandParam] string name)
     {
