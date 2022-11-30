@@ -9,7 +9,6 @@ public class TarkovItemEmbed : Embed
     {
         Item = item;
         Title = item.Name;
-        Description = item.Description;
         Footer = new EmbedFooter(item.Id);
         Author = new EmbedAuthor("Data provided by tarkov.dev", "https://tarkov.dev/");
         if (item.InspectImageLink != null)
@@ -21,6 +20,13 @@ public class TarkovItemEmbed : Embed
                 item.Slots > 1
                         ? $"{item.PricePerSlots}\n_({item.Slots} slots)_"
                         : $"{item.PricePerSlots}\n_({item.Slots} slot)_", true);
+        if (item.Ammo != null)
+        {
+            AddField("Damages", item.Ammo.Damage, true);
+            AddField("Armor Damages", item.Ammo.ArmorDamage, true);
+            AddField("Penetration Power", item.Ammo.PenetrationPower, true);
+            AddField("Penetration Chance", item.Ammo.PenetrationChance, true);
+        }
     }
 
     public TarkovItem Item { get; }

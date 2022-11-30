@@ -12,8 +12,9 @@ namespace TarkovBot.Services;
 [Singleton(typeof(ILogger), Instance = nameof(Logger))]
 [Singleton(typeof(IConfigService), typeof(ConfigService))]
 [Singleton(typeof(IGuildedService), typeof(GuildedService))]
+[Singleton(typeof(IGuildedMessageReactionService), typeof(GuildedMessageReactionService))]
 [Singleton(typeof(IGraphQlClientService), typeof(GraphQlClientServiceService))]
-[Singleton(typeof(IItemsProvider), typeof(TarkovItemsProvider))]
+[Singleton(typeof(IItemsProvider), typeof(TarkovItemsProviderService))]
 public partial class ServiceProvider
 {
     public static ServiceProvider Instance { get; private set; } = default!;

@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Serilog;
 using TarkovBot.Config;
 using TarkovBot.Services.Abstractions;
 

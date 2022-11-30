@@ -1,8 +1,5 @@
-﻿using System.Collections.Concurrent;
-using Guilded;
-using Guilded.Base.Embeds;
+﻿using Guilded.Base.Embeds;
 using Guilded.Commands;
-using Guilded.Content;
 using Guilded.Events;
 using TarkovBot.Data;
 using TarkovBot.Embeds;
@@ -12,17 +9,24 @@ namespace TarkovBot.Services.Commands;
 
 public class ItemsCommand : CommandModule, IGuildedCommand
 {
-    private readonly IItemsProvider                                _itemsProvider;
-    private readonly ConcurrentDictionary<Guid, ItemSelectionData> _selections = new();
+    private readonly IItemsProvider                 _itemsProvider;
+    private readonly IGuildedMessageReactionService _guildedReactionService;
 
-    public ItemsCommand(IItemsProvider itemsProvider)
+    public ItemsCommand(IItemsProvider itemsProvider, IGuildedMessageReactionService guildedMessageReactionService)
     {
         _itemsProvider = itemsProvider;
+        _guildedReactionService = guildedMessageReactionService;
     }
 
     [Command("item", Aliases = new[] { "i" })]
     public async Task ItemCommand(CommandEvent e, [CommandParam] string name)
     {
+        if (_itemsProvider.IsUpdating)
+        {
+            await e.ReplyAsync("I'm updating items data ! Please retry in a minute");
+            return;
+        }
+
         var items = _itemsProvider.FindByName(name).ToArray();
 
         if (items.Length == 1)
@@ -45,38 +49,23 @@ public class ItemsCommand : CommandModule, IGuildedCommand
 
         var message = await e.ReplyAsync(embeds: embed);
 
-        if (_selections.TryAdd(message.Id, new ItemSelectionData { Message = message, Items = items }))
+        if (_guildedReactionService.TryAdd(new MessageData
+                    { Message = message, Callback = OnReactionAdded, Data = items }))
         {
-            message.ReactionAdded.ElapseOn(TimeSpan.FromSeconds(10)).Subscribe(OnReactionAdded,
-                    () =>
-                    {
-                        _selections.TryRemove(message.Id, out var itemSelection);
-                        itemSelection!.Message.DeleteAsync();
-                    });
+            for (var i = 0; i < items.Length; i++)
+                await message.AddReactionAsync(Emotes.IndexEmotes[i]);
         }
-
-        for (var i = 0; i < items.Length; i++)
-            await message.AddReactionAsync(Emotes.IndexEmotes[i]);
     }
 
-    private void OnReactionAdded(MessageReactionEvent e)
+    private static async void OnReactionAdded(MessageReactionEvent e, MessageData messageData)
     {
-        if (e.CreatedBy == e.ParentClient.Id)
-            return;
         if (e.Emote.Id is < Emotes.ZeroIndexEmote or > Emotes.MaxIndexEmote)
             return;
-        if (_selections.TryGetValue(e.MessageId, out var itemSelection))
-        {
-            var index = e.Emote.Id - Emotes.ZeroIndexEmote;
-            if (index >= itemSelection.Items.Length)
-                return;
-            itemSelection.Message.UpdateAsync(embeds: new TarkovItemEmbed(itemSelection.Items[index]));
-        }
+        if (messageData.Data is not TarkovItem[] items)
+            return;
+        var index = e.Emote.Id - Emotes.ZeroIndexEmote;
+        if (index >= items.Length)
+            return;
+        await messageData.Message.UpdateAsync(embeds: new TarkovItemEmbed(items[index]));
     }
-}
-
-public class ItemSelectionData
-{
-    public required Message      Message { get; init; }
-    public required TarkovItem[] Items   { get; init; }
 }
