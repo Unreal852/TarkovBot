@@ -3,6 +3,7 @@ using Guilded.Commands;
 using Guilded.Connection;
 using Guilded.Events;
 using Serilog;
+using TarkovBot.Embeds;
 using TarkovBot.Services.Abstractions;
 using Websocket.Client;
 
@@ -34,8 +35,12 @@ public sealed class GuildedService : IGuildedService
                         command.GetType().Name, typeof(CommandModule));
                 continue;
             }
-
+#if DEBUG
+            _guilded.AddCommands(commandModule, "t?");
+#else
             _guilded.AddCommands(commandModule, _configService.Config.Prefix);
+#endif
+            _guilded.ServerAdded.Subscribe(OnServerAdded);
             _guilded.MessageReactionAdded.Subscribe(OnMessageReactionAdded);
             _loggerService.Information("Command '{Command}' registered", commandModule.GetType().Name);
         }
@@ -59,6 +64,15 @@ public sealed class GuildedService : IGuildedService
     private void OnDisconnected(DisconnectionInfo info)
     {
         _loggerService.Warning("Disconnected from guilded ! Type: {DisconnectionType}", info.Type);
+    }
+
+    private void OnServerAdded(ServerAddedEvent e)
+    {
+        var defaultChannelId = e.Server.DefaultChannelId;
+        if (defaultChannelId == null)
+            return;
+        var helpEmbed = new HelpEmbed();
+        _guilded.CreateMessageAsync(defaultChannelId.Value, helpEmbed);
     }
 
     private void OnMessageReactionAdded(MessageReactionEvent e)

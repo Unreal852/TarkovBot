@@ -1,4 +1,5 @@
-﻿using Guilded.Base.Embeds;
+﻿using System.Drawing;
+using Guilded.Base.Embeds;
 using Guilded.Commands;
 using Guilded.Events;
 using TarkovBot.Data;
@@ -21,13 +22,7 @@ public class ItemsCommand : CommandModule, IGuildedCommand
     [Command("help", Aliases = new[] { "h" })]
     public Task HelpCommand(CommandEvent e)
     {
-        var embed = new Embed
-        {
-                Title = "EFT Commands"
-        };
-        embed.AddField("t!item <item_name> or t!i",
-                "Search for a specific item infos. \n Example: t!i afak");
-        return e.ReplyAsync(embeds: embed);
+        return e.ReplyAsync(embeds: new HelpEmbed());
     }
 
     [Command("item", Aliases = new[] { "i" })]
@@ -40,6 +35,20 @@ public class ItemsCommand : CommandModule, IGuildedCommand
         }
 
         var items = _itemsProvider.FindByName(name).ToArray();
+
+        if (items.Length == 0)
+        {
+            var errorEmbed = new Embed
+            {
+                    Color = Color.Red,
+                    Title = "No item found",
+                    Description
+                            = $"No item was found for **{name}**.\nIf this is a new item you might need to wait for the bot to update the items cache, this usually happen every hours",
+                    Image = new EmbedMedia("https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
+            };
+            await e.ReplyAsync(embeds: errorEmbed);
+            return;
+        }
 
         if (items.Length == 1)
         {
