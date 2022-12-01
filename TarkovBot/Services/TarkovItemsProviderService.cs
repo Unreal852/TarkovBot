@@ -20,7 +20,8 @@ public class TarkovItemsProviderService : IItemsProvider
         _timer.Start(true);
     }
 
-    public bool IsUpdating { get; private set; }
+    public bool     IsUpdating     { get; private set; }
+    public DateTime NextUpdateDate { get; private set; }
 
     public async Task UpdateItems()
     {
@@ -41,6 +42,7 @@ public class TarkovItemsProviderService : IItemsProvider
         }
 
         _logger.Information("Updated {ItemsCount} items and {AmmosCount} ammos", _items.Count, ammos?.Ammo.Length ?? 0);
+        NextUpdateDate = DateTime.Now + _timer.Interval;
         IsUpdating = false;
     }
 

@@ -71,7 +71,9 @@ public sealed class GuildedService : IGuildedService
         var defaultChannelId = e.Server.DefaultChannelId;
         if (defaultChannelId == null)
             return;
-        var helpEmbed = new HelpEmbed();
+        var helpEmbed = new HelpEmbed("Thank you for adding me to your server !"       +
+                                      "\nBelow, you will find all available commands." +
+                                      "\nGood luck in the harsh world of Tarkov, I've got your back.");
         _guilded.CreateMessageAsync(defaultChannelId.Value, helpEmbed);
     }
 

@@ -10,6 +10,7 @@ public class BackgroundTimer
 
     private BackgroundTimer(TimeSpan interval)
     {
+        Interval = interval;
         _timer = new PeriodicTimer(interval);
     }
 
@@ -22,6 +23,8 @@ public class BackgroundTimer
     {
         _asyncCallback = asyncCallback;
     }
+
+    public TimeSpan Interval { get; }
 
     public void Start(bool runCallback = false)
     {

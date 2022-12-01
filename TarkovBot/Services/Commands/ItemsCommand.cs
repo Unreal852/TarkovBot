@@ -2,6 +2,7 @@
 using Guilded.Base.Embeds;
 using Guilded.Commands;
 using Guilded.Events;
+using Serilog;
 using TarkovBot.Data;
 using TarkovBot.Embeds;
 using TarkovBot.Services.Abstractions;
@@ -43,7 +44,10 @@ public class ItemsCommand : CommandModule, IGuildedCommand
                     Color = Color.Red,
                     Title = "No item found",
                     Description
-                            = $"No item was found for **{name}**.\nIf this is a new item you might need to wait for the bot to update the items cache, this usually happen every hours",
+                            = $"No item was found for **{name}**." +
+                              "\nIf this is a new item you might need to wait for the bot to update the items cache",
+                    Footer = new EmbedFooter(
+                            $"The cache will be updated in {_itemsProvider.NextUpdateDate - DateTime.Now}"),
                     Image = new EmbedMedia("https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
             };
             await e.ReplyAsync(embeds: errorEmbed);
@@ -59,13 +63,16 @@ public class ItemsCommand : CommandModule, IGuildedCommand
 
         var embed = new Embed
         {
-                Title = "Select an item by reacting to this message",
+                Title = "EFT - Item Selector",
+                Description = $"Multiple items have been found for **{name}**\n"               +
+                              "Select one from the items below by reacting to this message.\n" +
+                              "If the item that you are looking for is not listed below, refine your query.",
                 Footer = new EmbedFooter("Expire in one minute")
         };
 
         for (var i = 0; i < items.Length; i++)
         {
-            embed.AddField($"{i}. {items[i].Name!}", string.Empty);
+            embed.AddField($"{i}. `{items[i].Name!}`", string.Empty);
         }
 
         var message = await e.ReplyAsync(embeds: embed);

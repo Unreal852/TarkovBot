@@ -4,7 +4,8 @@ namespace TarkovBot.Services.Abstractions;
 
 public interface IItemsProvider
 {
-    bool IsUpdating { get; }
+    bool     IsUpdating     { get; }
+    DateTime NextUpdateDate { get; }
 
     Task                    UpdateItems();
     IEnumerable<TarkovItem> FindByName(string itemName, int maxItems = 10);

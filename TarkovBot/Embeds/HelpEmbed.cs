@@ -4,10 +4,10 @@ namespace TarkovBot.Embeds;
 
 public class HelpEmbed : Embed
 {
-    public HelpEmbed()
+    public HelpEmbed(string? description = null)
     {
         Title = "EFT - Help";
-        Description = "You will find available commands below";
+        Description = description;
         Color = System.Drawing.Color.Cyan;
 
         AddField("`t!h`",
