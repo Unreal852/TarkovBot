@@ -22,10 +22,21 @@ public class TarkovItemEmbed : Embed
                         : $"{item.PricePerSlots}\n_({item.Slots} slot)_", true);
         if (item.Ammo != null)
         {
-            AddField("Damages", item.Ammo.Damage, true);
+            AddField("Flesh Damages", item.Ammo.Damage, true);
             AddField("Armor Damages", item.Ammo.ArmorDamage, true);
             AddField("Penetration Power", item.Ammo.PenetrationPower, true);
-            AddField("Penetration Chance", item.Ammo.PenetrationChance, true);
+            //AddField("Penetration Chance", item.Ammo.PenetrationChance, true);
+            AddField("Penetrate Armor Class", item.Ammo.EffectiveAgainstArmor, true);
+            Color = item.Ammo.EffectiveAgainstArmor switch
+            {
+                    >= 6 => System.Drawing.Color.Red,
+                    5    => System.Drawing.Color.Orange,
+                    4    => System.Drawing.Color.Yellow,
+                    3    => System.Drawing.Color.DodgerBlue,
+                    2    => System.Drawing.Color.SpringGreen,
+                    1    => System.Drawing.Color.Gray,
+                    _    => System.Drawing.Color.Black,
+            };
         }
     }
 

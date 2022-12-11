@@ -14,5 +14,15 @@ public class TarkovAmmo : IJsonOnDeserialized
 
     public void OnDeserialized()
     {
+        EffectiveAgainstArmor = PenetrationPower switch
+        {
+                >= 65 => 6,
+                >= 55 => 5,
+                >= 45 => 4,
+                >= 35 => 3,
+                >= 27 => 2,
+                >= 18 => 1,
+                _     => 0
+        };
     }
 }
