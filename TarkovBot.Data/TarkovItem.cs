@@ -27,7 +27,8 @@ public class TarkovItem : IJsonOnDeserialized
 
     public void OnDeserialized()
     {
-        Avg24HPrice ??= BasePrice;
+        if (Avg24HPrice is null or 0)
+            Avg24HPrice = BasePrice;
 
         if (Width.HasValue && Height.HasValue)
             Slots = Width.Value * Height.Value;

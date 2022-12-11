@@ -27,7 +27,7 @@ public class TarkovItemsProviderService : IItemsProvider
     {
         IsUpdating = true;
         var itemsResponse = await _graphQlClientService.RequestAs<ItemsResponseData>(
-                "items{id,name,description,wikiLink,inspectImageLink,types,avg24hPrice,width,height}");
+                "items{id,name,basePrice,description,wikiLink,inspectImageLink,types,avg24hPrice,width,height}");
         if (itemsResponse == null)
             return;
         _items.Clear();
