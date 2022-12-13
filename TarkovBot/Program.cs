@@ -14,7 +14,7 @@ internal static class Program
 
         var guilded = ServiceProvider.Instance.GetService<IGuildedService>();
         var itemService = ServiceProvider.Instance.GetService<IItemsProvider>();
-        
+
         //await itemService.UpdateItems();
         await guilded.ConnectAsync();
 

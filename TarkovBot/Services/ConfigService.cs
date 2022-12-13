@@ -13,13 +13,17 @@ public sealed class ConfigService : IConfigService
 
     private static BotConfig LoadConfig()
     {
+        var config = BotConfig.FromEnvVariables();
+        if (config != null)
+            return config;
+        
         if (!Directory.Exists(ConfigDirectory))
             throw new DirectoryNotFoundException(ConfigDirectory);
         var filePath = Path.Combine(ConfigDirectory, "config.json");
         if (!File.Exists(filePath))
             throw new FileNotFoundException("Config file not found", filePath);
         var fileContent =File.ReadAllText(filePath);
-        var config = JsonSerializer.Deserialize<BotConfig>(fileContent) ??
+        config = JsonSerializer.Deserialize<BotConfig>(fileContent) ??
                      throw new Exception("Failed to deserialize config");
         return config;
     }
